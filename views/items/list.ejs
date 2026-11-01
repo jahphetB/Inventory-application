@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+	</head>
+	<body class="inventory-page">
+		<main class="item-list-page">
+			<header class="item-list-page__header">
+				<a class="item-list-page__home-link" href="/">Home</a>
+				<h1 class="item-list-page__title"><%= title %></h1>
+			</header>
+
+			<% if (items.length === 0) { %>
+				<p class="item-list-page__empty">No instruments to display.</p>
+			<% } else { %>
+				<ul class="item-list">
+					<% items.forEach((item) => { %>
+						<li class="item-card">
+							<h2 class="item-card__heading">
+								<a class="item-card__link" href="/items/<%= item.id %>">
+									<%= item.name %>
+								</a>
+							</h2>
+							<p class="item-card__brand">Brand: <%= item.brand %></p>
+							<p class="item-card__price">
+								Price: <%= priceFormatter.format(item.price) %>
+							</p>
+							<p class="item-card__stock">
+								In stock: <%= item.stock_quantity %>
+							</p>
+						</li>
+					<% }); %>
+				</ul>
+			<% } %>
+		</main>
+	</body>
+</html>

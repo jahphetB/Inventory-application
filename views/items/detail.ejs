@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+	</head>
+	<body class="inventory-page">
+		<main class="item-detail-page">
+			<header class="item-detail-page__header">
+				<a class="item-detail-page__home-link" href="/">Home</a>
+				<a class="item-detail-page__items-link" href="/items">All items</a>
+				<h1 class="item-detail-page__title"><%= item.name %></h1>
+			</header>
+
+			<dl class="item-details">
+				<dt class="item-details__label item-details__brand-label">Brand</dt>
+				<dd class="item-details__brand"><%= item.brand %></dd>
+
+				<dt class="item-details__label item-details__description-label">
+					Description
+				</dt>
+				<dd class="item-details__description">
+					<%= item.description || "No description provided." %>
+				</dd>
+
+				<dt class="item-details__label item-details__price-label">Price</dt>
+				<dd class="item-details__price">
+					<%= priceFormatter.format(item.price) %>
+				</dd>
+
+				<dt class="item-details__label item-details__stock-label">In stock</dt>
+				<dd class="item-details__stock"><%= item.stock_quantity %></dd>
+
+				<dt class="item-details__label item-details__category-label">
+					Category
+				</dt>
+				<dd class="item-details__category">
+					<% if (item.category_id !== null) { %>
+						<a class="item-details__category-link" href="/categories/<%= item.category_id %>">
+							<%= item.category_name %>
+						</a>
+					<% } else { %>
+						<a class="item-details__category-link" href="/items/uncategorized">
+							Uncategorized
+						</a>
+					<% } %>
+				</dd>
+			</dl>
+		</main>
+	</body>
+</html>
