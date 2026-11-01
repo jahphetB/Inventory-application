@@ -12,6 +12,19 @@
 				<h1 class="item-list-page__title"><%= title %></h1>
 			</header>
 
+            <% if (locals.category) { %>
+                <section class="category-summary" aria-label="Category information">
+                    <% if (category.description) { %>
+                        <p class="category-summary__description">
+                            <%= category.description %>
+                        </p>
+                    <% } %>
+                    <p class="category-summary__count">
+                        Product entries: <%= items.length %>
+                    </p>
+                </section>
+            <% } %>
+
 			<% if (items.length === 0) { %>
 				<p class="item-list-page__empty">No instruments to display.</p>
 			<% } else { %>
