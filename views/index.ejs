@@ -7,8 +7,54 @@
 	</head>
 	<body class="inventory-page">
 		<main class="home-page">
-			<h1 class="home-page__title"><%= title %></h1>
-			<p class="home-page__status">The application is running.</p>
+			<header class="home-page__header">
+				<h1 class="home-page__title"><%= title %></h1>
+				<a class="home-page__all-items-link" href="/items">All items</a>
+			</header>
+
+			<section class="category-section" aria-labelledby="category-heading">
+				<h2 class="category-section__heading" id="category-heading">
+					Categories
+				</h2>
+
+				<% if (categories.length === 0) { %>
+					<p class="category-section__empty">No categories yet.</p>
+				<% } %>
+
+				<ul class="category-list">
+					<% categories.forEach((category) => { %>
+						<li class="category-card">
+							<h3 class="category-card__heading">
+								<a class="category-card__link" href="/categories/<%= category.id %>">
+									<%= category.name %>
+								</a>
+							</h3>
+
+							<% if (category.description) { %>
+								<p class="category-card__description"><%= category.description %></p>
+							<% } %>
+
+							<p class="category-card__count">
+								Product entries: <%= category.item_count %>
+							</p>
+						</li>
+					<% }); %>
+
+					<li class="category-card category-card--uncategorized">
+						<h3 class="category-card__heading">
+							<a class="category-card__link" href="/items/uncategorized">
+								Uncategorized
+							</a>
+						</h3>
+						<p class="category-card__description">
+							Instruments without an assigned category.
+						</p>
+						<p class="category-card__count">
+							Product entries: <%= uncategorizedCount %>
+						</p>
+					</li>
+				</ul>
+			</section>
 		</main>
 	</body>
 </html>
