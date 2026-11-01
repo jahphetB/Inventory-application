@@ -86,3 +86,48 @@ export async function getItemsByCategoryId(categoryId) {
 
 	return rows;
 }
+
+export async function createCategory({ name, description }) {
+	const { rows } = await pool.query(`
+		INSERT INTO categories (name, description)
+		VALUES ($1, $2)
+		RETURNING id;
+	`, [name, description || null]);
+
+	return rows[0];
+}
+
+export async function createItem(item) {
+	const { rows } = await pool.query(`
+		INSERT INTO items (
+			name,
+			brand,
+			description,
+			price,
+			stock_quantity,
+			category_id
+		)
+		VALUES ($1, $2, $3, $4, $5, $6)
+		RETURNING id;
+	`, [
+		item.name,
+		item.brand,
+		item.description || null,
+		item.price,
+		item.stock_quantity,
+		item.category_id,
+	]);
+
+	return rows[0];
+}
+
+export async function updateCategory(id, { name, description }) {
+	const { rows } = await pool.query(`
+		UPDATE categories
+		SET name = $1, description = $2
+		WHERE id = $3
+		RETURNING id;
+	`, [name, description || null, id]);
+
+	return rows[0];
+}

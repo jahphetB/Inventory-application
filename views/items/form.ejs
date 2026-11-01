@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+	</head>
+	<body class="inventory-page">
+		<main class="item-form-page">
+			<h1 class="item-form-page__title"><%= title %></h1>
+
+			<% if (errors.length > 0) { %>
+				<div class="form-errors" role="alert">
+					<p class="form-errors__heading">Please correct the following:</p>
+					<ul class="form-errors__list">
+						<% errors.forEach((error) => { %>
+							<li class="form-errors__item"><%= error %></li>
+						<% }); %>
+					</ul>
+				</div>
+			<% } %>
+
+			<form class="item-form" action="<%= action %>" method="post">
+				<div class="form-field item-form__name-field">
+					<label class="form-field__label" for="item-name">Name (required)</label>
+					<input
+						class="form-field__input"
+						id="item-name"
+						name="name"
+						type="text"
+						value="<%= item.name %>"
+						required
+					>
+				</div>
+
+				<div class="form-field item-form__brand-field">
+					<label class="form-field__label" for="item-brand">Brand (required)</label>
+					<input
+						class="form-field__input"
+						id="item-brand"
+						name="brand"
+						type="text"
+						value="<%= item.brand %>"
+						required
+					>
+				</div>
+
+				<div class="form-field item-form__description-field">
+					<label class="form-field__label" for="item-description">
+						Description (optional)
+					</label>
+					<textarea
+						class="form-field__input"
+						id="item-description"
+						name="description"
+					><%= item.description %></textarea>
+				</div>
+
+				<div class="form-field item-form__price-field">
+					<label class="form-field__label" for="item-price">
+						Price in USD (required)
+					</label>
+					<input
+						class="form-field__input"
+						id="item-price"
+						name="price"
+						type="number"
+						min="0"
+						max="99999999.99"
+						step="0.01"
+						value="<%= item.price %>"
+						required
+					>
+				</div>
+
+				<div class="form-field item-form__stock-field">
+					<label class="form-field__label" for="item-stock">
+						Stock quantity (required)
+					</label>
+					<input
+						class="form-field__input"
+						id="item-stock"
+						name="stock_quantity"
+						type="number"
+						min="0"
+						max="2147483647"
+						step="1"
+						value="<%= item.stock_quantity %>"
+						required
+					>
+				</div>
+
+				<div class="form-field item-form__category-field">
+					<label class="form-field__label" for="item-category">
+						Category (required choice)
+					</label>
+					<select
+						class="form-field__input"
+						id="item-category"
+						name="category_id"
+						required
+					>
+						<option
+							class="item-form__category-placeholder"
+							value=""
+							disabled
+							<%= item.category_id === "" ? "selected" : "" %>
+						>Choose a category</option>
+						<option
+							class="item-form__category-option"
+							value="uncategorized"
+							<%= item.category_id === "uncategorized" ? "selected" : "" %>
+						>Uncategorized</option>
+						<% categories.forEach((category) => { %>
+							<option
+								class="item-form__category-option"
+								value="<%= category.id %>"
+								<%= String(item.category_id) === String(category.id) ? "selected" : "" %>
+							><%= category.name %></option>
+						<% }); %>
+					</select>
+				</div>
+
+				<div class="item-form__actions">
+					<button class="item-form__submit" type="submit">
+						<%= submitLabel %>
+					</button>
+					<a class="item-form__cancel" href="<%= cancelUrl %>">Cancel</a>
+				</div>
+			</form>
+		</main>
+	</body>
+</html>

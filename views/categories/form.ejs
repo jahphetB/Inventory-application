@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+	</head>
+	<body class="inventory-page">
+		<main class="category-form-page">
+			<h1 class="category-form-page__title"><%= title %></h1>
+
+			<% if (errors.length > 0) { %>
+				<div class="form-errors" role="alert">
+					<p class="form-errors__heading">Please correct the following:</p>
+					<ul class="form-errors__list">
+						<% errors.forEach((error) => { %>
+							<li class="form-errors__item"><%= error %></li>
+						<% }); %>
+					</ul>
+				</div>
+			<% } %>
+
+			<form class="category-form" action="<%= action %>" method="post">
+				<div class="form-field category-form__name-field">
+					<label class="form-field__label" for="category-name">
+						Name (required)
+					</label>
+					<input
+						class="form-field__input"
+						id="category-name"
+						name="name"
+						type="text"
+						value="<%= category.name %>"
+						required
+					>
+				</div>
+
+				<div class="form-field category-form__description-field">
+					<label class="form-field__label" for="category-description">
+						Description (optional)
+					</label>
+					<textarea
+						class="form-field__input"
+						id="category-description"
+						name="description"
+					><%= category.description %></textarea>
+				</div>
+
+				<div class="category-form__actions">
+					<button class="category-form__submit" type="submit">
+						<%= submitLabel %>
+					</button>
+					<a class="category-form__cancel" href="<%= cancelUrl %>">Cancel</a>
+				</div>
+			</form>
+		</main>
+	</body>
+</html>

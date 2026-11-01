@@ -1,7 +1,31 @@
 import { Router } from "express";
-import { getCategoryDetail } from "../controllers/categoriesController.js";
+import {
+	getCategoryDetail,
+	getCategoryCreate,
+	postCategoryCreate,
+} from "../controllers/categoriesController.js";
+import { body } from "express-validator";
 
 const categoriesRouter = Router();
+
+const validateCategory = [
+	body("name")
+		.isString()
+		.withMessage("Category name must be text.")
+		.bail()
+		.trim()
+		.notEmpty()
+		.withMessage("Category name is required."),
+	body("description")
+		.optional()
+		.isString()
+		.withMessage("Description must be text.")
+		.bail()
+		.trim(),
+];
+
+categoriesRouter.get("/new", getCategoryCreate);
+categoriesRouter.post("/new", validateCategory, postCategoryCreate);
 
 categoriesRouter.get("/:id", getCategoryDetail);
 
