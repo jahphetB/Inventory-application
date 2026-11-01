@@ -131,3 +131,110 @@ export async function updateCategory(id, { name, description }) {
 
 	return rows[0];
 }
+
+export async function updateItem(id, item) {
+	const { rows } = await pool.query(`
+		UPDATE items
+		SET
+			name = $1,
+			brand = $2,
+			description = $3,
+			price = $4,
+			stock_quantity = $5,
+			category_id = $6
+		WHERE id = $7
+		RETURNING id;
+	`, [
+		item.name,
+		item.brand,
+		item.description || null,
+		item.price,
+		item.stock_quantity,
+		item.category_id,
+		id,
+	]);
+
+	return rows[0];
+}
+
+export async function deleteItem(id) {
+	const { rows } = await pool.query(`
+		DELETE FROM items
+		WHERE id = $1
+		RETURNING id, category_id;
+	`, [id]);
+
+	return rows[0];
+}
+
+export async function deleteCategory(id, destinationId) {
+	const client = await pool.connect();
+
+	try {
+		await client.query("BEGIN");
+
+		const source = await client.query(`
+			SELECT id
+			FROM categories
+			WHERE id = $1
+			FOR UPDATE;
+		`, [id]);
+
+		if (source.rows.length === 0) {
+			await client.query("ROLLBACK");
+			return { status: "not_found" };
+		}
+
+		const inventory = await client.query(`
+			SELECT EXISTS (
+				SELECT 1 FROM items WHERE category_id = $1
+			) AS has_items;
+		`, [id]);
+
+		if (inventory.rows[0].has_items) {
+			if (destinationId === undefined) {
+				await client.query("ROLLBACK");
+				return { status: "destination_required" };
+			}
+
+			if (destinationId !== null) {
+				if (destinationId === id) {
+					await client.query("ROLLBACK");
+					return { status: "invalid_destination" };
+				}
+
+				const destination = await client.query(`
+					SELECT id
+					FROM categories
+					WHERE id = $1
+					FOR KEY SHARE;
+				`, [destinationId]);
+
+				if (destination.rows.length === 0) {
+					await client.query("ROLLBACK");
+					return { status: "invalid_destination" };
+				}
+			}
+
+			await client.query(`
+				UPDATE items
+				SET category_id = $1
+				WHERE category_id = $2;
+			`, [destinationId, id]);
+		}
+
+		await client.query(`
+			DELETE FROM categories
+			WHERE id = $1;
+		`, [id]);
+
+		await client.query("COMMIT");
+
+		return { status: "deleted" };
+	} catch (error) {
+		await client.query("ROLLBACK");
+		throw error;
+	} finally {
+		client.release();
+	}
+}

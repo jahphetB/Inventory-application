@@ -3,6 +3,8 @@ import {
 	getCategoryDetail,
 	getCategoryCreate,
 	postCategoryCreate,
+    getCategoryEdit,
+    postCategoryEdit,
 } from "../controllers/categoriesController.js";
 import { body } from "express-validator";
 
@@ -26,6 +28,9 @@ const validateCategory = [
 
 categoriesRouter.get("/new", getCategoryCreate);
 categoriesRouter.post("/new", validateCategory, postCategoryCreate);
+
+categoriesRouter.get("/:id/edit", getCategoryEdit);
+categoriesRouter.post("/:id/edit", validateCategory, postCategoryEdit);
 
 categoriesRouter.get("/:id", getCategoryDetail);
 

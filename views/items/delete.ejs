@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+	</head>
+	<body class="inventory-page">
+		<main class="item-delete-page">
+			<h1 class="item-delete-page__title"><%= title %></h1>
+
+			<p class="item-delete-page__question">
+				Delete <strong class="item-delete-page__item-name"><%= item.name %></strong>
+				by <span class="item-delete-page__item-brand"><%= item.brand %></span>?
+			</p>
+
+			<p class="item-delete-page__warning">
+				This permanently removes the instrument entry and its stock information.
+				This action cannot be undone.
+			</p>
+
+			<form
+				class="item-delete-form"
+				action="/items/<%= item.id %>/delete"
+				method="post"
+			>
+				<div class="item-delete-form__actions">
+					<button class="item-delete-form__submit" type="submit">
+						Delete instrument
+					</button>
+					<a class="item-delete-form__cancel" href="/items/<%= item.id %>">
+						Cancel
+					</a>
+				</div>
+			</form>
+		</main>
+	</body>
+</html>

@@ -11,6 +11,12 @@
 				<a class="item-detail-page__home-link" href="/">Home</a>
 				<a class="item-detail-page__items-link" href="/items">All items</a>
 				<h1 class="item-detail-page__title"><%= item.name %></h1>
+                <a class="item-detail-page__edit-link" href="/items/<%= item.id %>/edit">
+                    Edit instrument
+                </a>
+                <a class="item-detail-page__delete-link" href="/items/<%= item.id %>/delete">
+                    Delete instrument
+                </a>
 			</header>
 
 			<dl class="item-details">

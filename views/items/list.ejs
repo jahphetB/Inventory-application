@@ -14,6 +14,9 @@
 
             <% if (locals.category) { %>
                 <section class="category-summary" aria-label="Category information">
+                    <a class="category-summary__edit-link" href="/categories/<%= category.id %>/edit">
+                        Edit category
+                    </a>
                     <% if (category.description) { %>
                         <p class="category-summary__description">
                             <%= category.description %>
