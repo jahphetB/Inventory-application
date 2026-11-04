@@ -1,0 +1,26 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "inventory-application",
+	"main": "worker.js",
+	"compatibility_date": "2026-10-30",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"enable_nodejs_http_server_modules"
+	],
+	"build": {
+		"command": "npm run build:views",
+		"watch_dir": "views"
+	},
+	"env": {
+		"production": {
+			"name": "inventory-application",
+			"workers_dev": true,
+			"hyperdrive": [
+				{
+					"binding": "HYPERDRIVE",
+					"id": "f0538212081b4d518bb2ccc651126d9f"
+				}
+			]
+		}
+	}
+}

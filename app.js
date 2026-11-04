@@ -1,12 +1,12 @@
 import express from "express";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import process from "node:process";
 import indexRouter from "./routes/indexRouter.js";
 import itemsRouter from "./routes/itemsRouter.js";
 import categoriesRouter from "./routes/categoriesRouter.js";
 
 const app = express();
-const projectDirectory = path.dirname(fileURLToPath(import.meta.url));
+const projectDirectory = process.cwd();
 
 app.set("views", path.join(projectDirectory, "views"));
 app.set("view engine", "ejs");
