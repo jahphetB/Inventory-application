@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+	</head>
+	<body class="inventory-page">
+		<main class="category-delete-page">
+			<h1 class="category-delete-page__title"><%= title %></h1>
+
+			<p class="category-delete-page__question">
+				Delete
+				<strong class="category-delete-page__name"><%= category.name %></strong>?
+			</p>
+
+			<p class="category-delete-page__count">
+				Product entries: <%= category.item_count %>
+			</p>
+
+			<% if (errors.length > 0) { %>
+				<div class="form-errors" role="alert">
+					<p class="form-errors__heading">Please correct the following:</p>
+					<ul class="form-errors__list">
+						<% errors.forEach((error) => { %>
+							<li class="form-errors__item"><%= error %></li>
+						<% }); %>
+					</ul>
+				</div>
+			<% } %>
+
+			<form
+				class="category-delete-form"
+				action="/categories/<%= category.id %>/delete"
+				method="post"
+			>
+				<% if (hasItems) { %>
+					<p class="category-delete-form__transfer-notice">
+						Choose where to move every instrument before deleting this category.
+						The instruments will be preserved.
+					</p>
+
+					<div class="form-field category-delete-form__destination-field">
+						<label class="form-field__label" for="category-destination">
+							Move instruments to (required)
+						</label>
+						<select
+							class="form-field__input"
+							id="category-destination"
+							name="destination_id"
+							required
+						>
+							<option
+								class="category-delete-form__destination-placeholder"
+								value=""
+								disabled
+								<%= selectedDestination === "" ? "selected" : "" %>
+							>Choose a destination</option>
+
+							<option
+								class="category-delete-form__destination-option"
+								value="uncategorized"
+								<%= selectedDestination === "uncategorized" ? "selected" : "" %>
+							>Uncategorized</option>
+
+							<% destinations.forEach((destination) => { %>
+								<option
+									class="category-delete-form__destination-option"
+									value="<%= destination.id %>"
+									<%= selectedDestination === String(destination.id) ? "selected" : "" %>
+								><%= destination.name %></option>
+							<% }); %>
+						</select>
+					</div>
+				<% } else { %>
+					<p class="category-delete-form__empty-notice">
+						This category is empty and can be deleted directly.
+					</p>
+				<% } %>
+
+				<p class="category-delete-form__warning">
+					Deleting the category cannot be undone.
+				</p>
+
+				<div class="category-delete-form__actions">
+					<button class="category-delete-form__submit" type="submit">
+						<%= hasItems ? "Move instruments and delete category" : "Delete category" %>
+					</button>
+					<a
+						class="category-delete-form__cancel"
+						href="/categories/<%= category.id %>"
+					>Cancel</a>
+				</div>
+			</form>
+		</main>
+	</body>
+</html>

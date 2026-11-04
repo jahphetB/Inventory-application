@@ -3,6 +3,8 @@ import {
 	getItemsByCategoryId,
     createCategory,
     updateCategory,
+    deleteCategory,
+    getCategoriesWithCounts,
 } from "../db/queries.js";
 
 import { validationResult } from "express-validator";
@@ -207,6 +209,120 @@ export async function postCategoryEdit(req, res, next) {
 			);
 		}
 
+		next(error);
+	}
+}
+
+async function renderCategoryDeleteForm(
+	res,
+	id,
+	errors = [],
+	selectedDestination = "",
+	status = 200,
+) {
+	const categories = await getCategoriesWithCounts();
+	const category = categories.find((category) => category.id === id);
+
+	if (!category) {
+		return res.status(404).send("Category not found.");
+	}
+
+	const destinations = categories.filter((category) => category.id !== id);
+
+	return res.status(status).render("categories/delete", {
+		title: "Delete category",
+		category,
+		destinations,
+		hasItems: Number(category.item_count) > 0,
+		selectedDestination,
+		errors,
+	});
+}
+
+export async function getCategoryDelete(req, res, next) {
+	const id = parseCategoryId(req.params.id);
+
+	if (id === null) {
+		return res.status(404).send("Category not found.");
+	}
+
+	try {
+		return await renderCategoryDeleteForm(res, id);
+	} catch (error) {
+		next(error);
+	}
+}
+
+export async function postCategoryDelete(req, res, next) {
+	const id = parseCategoryId(req.params.id);
+
+	if (id === null) {
+		return res.status(404).send("Category not found.");
+	}
+
+	try {
+		const rawDestination = req.body?.destination_id;
+
+		if (
+			rawDestination !== undefined &&
+			typeof rawDestination !== "string"
+		) {
+			return await renderCategoryDeleteForm(
+				res,
+				id,
+				["Choose a valid destination."],
+				"",
+				400,
+			);
+		}
+
+		const selection = (rawDestination ?? "").trim();
+		let destinationId;
+
+		if (selection === "uncategorized") {
+			destinationId = null;
+		} else if (selection !== "") {
+			destinationId = parseCategoryId(selection);
+
+			if (destinationId === null) {
+				return await renderCategoryDeleteForm(
+					res,
+					id,
+					["Choose a valid destination."],
+					"",
+					400,
+				);
+			}
+		}
+
+		const result = await deleteCategory(id, destinationId);
+
+		if (result.status === "not_found") {
+			return res.status(404).send("Category not found.");
+		}
+
+		if (result.status === "destination_required") {
+			return await renderCategoryDeleteForm(
+				res,
+				id,
+				["This category contains instruments. Choose where to move them."],
+				selection,
+				400,
+			);
+		}
+
+		if (result.status === "invalid_destination") {
+			return await renderCategoryDeleteForm(
+				res,
+				id,
+				["Choose another existing category or Uncategorized."],
+				"",
+				400,
+			);
+		}
+
+		return res.redirect(303, "/");
+	} catch (error) {
 		next(error);
 	}
 }

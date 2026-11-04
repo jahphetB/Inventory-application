@@ -5,6 +5,8 @@ import {
 	postCategoryCreate,
     getCategoryEdit,
     postCategoryEdit,
+    getCategoryDelete,
+    postCategoryDelete,
 } from "../controllers/categoriesController.js";
 import { body } from "express-validator";
 
@@ -31,6 +33,9 @@ categoriesRouter.post("/new", validateCategory, postCategoryCreate);
 
 categoriesRouter.get("/:id/edit", getCategoryEdit);
 categoriesRouter.post("/:id/edit", validateCategory, postCategoryEdit);
+
+categoriesRouter.get("/:id/delete", getCategoryDelete);
+categoriesRouter.post("/:id/delete", postCategoryDelete);
 
 categoriesRouter.get("/:id", getCategoryDetail);
 

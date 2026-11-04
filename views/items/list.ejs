@@ -17,6 +17,9 @@
                     <a class="category-summary__edit-link" href="/categories/<%= category.id %>/edit">
                         Edit category
                     </a>
+                    <a class="category-summary__delete-link" href="/categories/<%= category.id %>/delete">
+                        Delete category
+                    </a>
                     <% if (category.description) { %>
                         <p class="category-summary__description">
                             <%= category.description %>
