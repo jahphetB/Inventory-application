@@ -4,51 +4,87 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
 	</head>
 	<body class="inventory-page">
-		<main class="item-list-page">
+		<%- include("../partials/navigation") %>
+
+		<main class="item-list-page page-content" id="main-content">
 			<header class="item-list-page__header">
-				<a class="item-list-page__home-link" href="/">Home</a>
-				<h1 class="item-list-page__title"><%= title %></h1>
+				<p class="item-list-page__eyebrow page-eyebrow">
+					<%= locals.category ? "Collection" : "Instrument library" %>
+				</p>
+				<h1 class="item-list-page__title page-title"><%= title %></h1>
+				<p class="item-list-page__description page-description">
+					Browse instruments and check their latest prices and stock.
+				</p>
 			</header>
 
-            <% if (locals.category) { %>
-                <section class="category-summary" aria-label="Category information">
-                    <a class="category-summary__edit-link" href="/categories/<%= category.id %>/edit">
-                        Edit category
-                    </a>
-                    <a class="category-summary__delete-link" href="/categories/<%= category.id %>/delete">
-                        Delete category
-                    </a>
-                    <% if (category.description) { %>
-                        <p class="category-summary__description">
-                            <%= category.description %>
-                        </p>
-                    <% } %>
-                    <p class="category-summary__count">
-                        Product entries: <%= items.length %>
-                    </p>
-                </section>
-            <% } %>
+			<% if (locals.category) { %>
+				<section class="category-summary" aria-label="Category information">
+					<div class="category-summary__content">
+						<% if (category.description) { %>
+							<p class="category-summary__description">
+								<%= category.description %>
+							</p>
+						<% } %>
+
+						<p class="category-summary__count">
+							<%= items.length %>
+							<%= items.length === 1 ? "instrument" : "instruments" %>
+							in this collection
+						</p>
+					</div>
+
+					<div class="category-summary__actions">
+						<a
+							class="category-summary__edit-link button button--secondary"
+							href="/categories/<%= category.id %>/edit"
+						>Edit category</a>
+						<a
+							class="category-summary__delete-link button button--danger"
+							href="/categories/<%= category.id %>/delete"
+						>Delete category</a>
+					</div>
+				</section>
+			<% } %>
+
+			<div class="item-list-page__section-header">
+				<h2 class="item-list-page__section-heading section-heading">Instruments</h2>
+				<p class="item-list-page__count section-meta">
+					<%= items.length %> total
+				</p>
+			</div>
 
 			<% if (items.length === 0) { %>
-				<p class="item-list-page__empty">No instruments to display.</p>
+				<p class="item-list-page__empty empty-state">
+					No instruments here yet. Add an instrument to get started.
+				</p>
 			<% } else { %>
 				<ul class="item-list">
 					<% items.forEach((item) => { %>
 						<li class="item-card">
+							<p class="item-card__brand"><%= item.brand %></p>
+
 							<h2 class="item-card__heading">
 								<a class="item-card__link" href="/items/<%= item.id %>">
 									<%= item.name %>
 								</a>
 							</h2>
-							<p class="item-card__brand">Brand: <%= item.brand %></p>
-							<p class="item-card__price">
-								Price: <%= priceFormatter.format(item.price) %>
-							</p>
-							<p class="item-card__stock">
-								In stock: <%= item.stock_quantity %>
-							</p>
+
+							<div class="item-card__footer">
+								<p class="item-card__price">
+									<%= priceFormatter.format(item.price) %>
+								</p>
+
+								<p class="item-card__stock <%= Number(item.stock_quantity) === 0 ? 'item-card__stock--empty' : '' %>">
+									<% if (Number(item.stock_quantity) === 0) { %>
+										Out of stock
+									<% } else { %>
+										<%= item.stock_quantity %> in stock
+									<% } %>
+								</p>
+							</div>
 						</li>
 					<% }); %>
 				</ul>

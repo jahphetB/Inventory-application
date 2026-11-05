@@ -4,59 +4,76 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
 	</head>
 	<body class="inventory-page">
-		<main class="home-page">
+		<%- include("partials/navigation") %>
+
+		<main class="home-page page-content" id="main-content">
 			<header class="home-page__header">
-				<h1 class="home-page__title"><%= title %></h1>
-				<a class="home-page__all-items-link" href="/items">All items</a>
-                <a class="home-page__create-category-link" href="/categories/new">
-                    Create category
-                </a>
-                <a class="home-page__create-item-link" href="/items/new">
-                    Create instrument
-                </a>
+				<p class="home-page__eyebrow page-eyebrow">The inventory studio</p>
+				<h1 class="home-page__title page-title"><%= title %></h1>
+				<p class="home-page__description page-description">
+					Your instruments, organized. Browse categories, check stock,
+					and keep every detail in tune.
+				</p>
 			</header>
 
 			<section class="category-section" aria-labelledby="category-heading">
-				<h2 class="category-section__heading" id="category-heading">
-					Categories
-				</h2>
+				<div class="category-section__header">
+					<h2 class="category-section__heading section-heading" id="category-heading">
+						Browse categories
+					</h2>
+					<p class="category-section__meta section-meta">
+						<%= categories.length %>
+						<%= categories.length === 1 ? "category" : "categories" %>
+					</p>
+				</div>
 
 				<% if (categories.length === 0) { %>
-					<p class="category-section__empty">No categories yet.</p>
+					<p class="category-section__empty empty-state">
+						No categories yet. Add a category to organize your instruments.
+					</p>
 				<% } %>
 
 				<ul class="category-list">
 					<% categories.forEach((category) => { %>
 						<li class="category-card">
+							<p class="category-card__type">Collection</p>
+
 							<h3 class="category-card__heading">
 								<a class="category-card__link" href="/categories/<%= category.id %>">
 									<%= category.name %>
 								</a>
 							</h3>
 
-							<% if (category.description) { %>
-								<p class="category-card__description"><%= category.description %></p>
-							<% } %>
+							<p class="category-card__description">
+								<%= category.description || "Explore the instruments in this collection." %>
+							</p>
 
 							<p class="category-card__count">
-								Product entries: <%= category.item_count %>
+								<%= category.item_count %>
+								<%= Number(category.item_count) === 1 ? "instrument" : "instruments" %>
 							</p>
 						</li>
 					<% }); %>
 
 					<li class="category-card category-card--uncategorized">
+						<p class="category-card__type">Unassigned</p>
+
 						<h3 class="category-card__heading">
 							<a class="category-card__link" href="/items/uncategorized">
 								Uncategorized
 							</a>
 						</h3>
+
 						<p class="category-card__description">
-							Instruments without an assigned category.
+							Instruments waiting for a collection of their own.
 						</p>
+
 						<p class="category-card__count">
-							Product entries: <%= uncategorizedCount %>
+							<%= uncategorizedCount %>
+							<%= Number(uncategorizedCount) === 1 ? "instrument" : "instruments" %>
 						</p>
 					</li>
 				</ul>

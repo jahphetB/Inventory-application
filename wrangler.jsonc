@@ -7,6 +7,9 @@
 		"nodejs_compat",
 		"enable_nodejs_http_server_modules"
 	],
+	"assets": {
+		"directory": "./public"
+	},
 	"build": {
 		"command": "npm run build:views",
 		"watch_dir": "views"
@@ -15,6 +18,9 @@
 		"production": {
 			"name": "inventory-application",
 			"workers_dev": true,
+			"assets": {
+				"directory": "./public"
+			},
 			"hyperdrive": [
 				{
 					"binding": "HYPERDRIVE",
