@@ -5,6 +5,7 @@ import { validateCatalog, definitionHash } from "../db/sampleCatalogValidation.j
 
 test("approved catalog has 70 categories, five distinct items each, and verified/fictional identities", () => {
 	assert.deepEqual(validateCatalog(catalog), { categories: 70, items: 350, real: 21, fictional: 329 });
+	assert.deepEqual(catalog.family_counts, { 1: 16, 2: 12, 3: 17, 4: 17, 5: 8 });
 	assert.ok(!catalog.categories.some((category) => category.name === "Drums"));
 });
 

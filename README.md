@@ -113,6 +113,15 @@ The migrations preserve existing instrument records and add five fixed instrumen
 
 The Step 2 constraint requires a valid family for every category. Existing items retain their fields and category IDs. An item's family is derived from its category; the item form submits only the category, labelled with its family. Global Uncategorized remains available outside the five families. See [migration details](docs/MIGRATIONS.md) and the [before and planned-after Mermaid diagrams](docs/PROJECT_STRUCTURE.md).
 
+For the full approved demonstration catalog, use the separate additive importer:
+
+```powershell
+npm.cmd run db:samples:import -- --remove-empty-legacy-drums
+npm run db:samples:check
+```
+
+This adds 70 catalog categories with five new samples each, reusing matching existing categories. It removes the legacy Drums category only if it is still empty and the explicit first-import flag is supplied. The current local database has 354 instruments, including its four preserved originals. Later reruns with `npm run db:samples:import` preserve user edits and deletions without duplicating records. All new prices and stock values are fictional; identities are source-verified or explicitly fictional. Read [the sample-data documentation](docs/SAMPLE_DATA.md) before importing.
+
 ### Run development
 
 Normal Node development:
@@ -148,7 +157,7 @@ npm run db:check
 npm run test:db
 ```
 
-The automated authorization tests use Node's built-in test runner. They cover missing configuration, exact password matching, concurrent Worker configuration isolation, and all six protected POST routes. `npm test` does not connect to a database and skips the opt-in integration tests. `npm run test:db` rebuilds the templates and verifies migrations, native/compiled browsing, family validation, protected CRUD, transfer rollback, and the guarded initial seed in isolated local schemas. `db:check` separately verifies the configured database and table access.
+The automated tests use Node's built-in test runner. `npm test` checks authorization and catalog definitions without a database and skips the opt-in integration tests. `npm run test:db` rebuilds templates and verifies migrations, native/compiled browsing, protected CRUD, transfers, the guarded initial seed, and additive sample imports in isolated local schemas. Import tests cover reruns, edits/deletions, conflicts, rollback, concurrency, and later additions. `db:check` separately verifies the configured database and table access.
 
 ## Production deployment
 

@@ -12,6 +12,8 @@
 		"db:families:check": "node --env-file=.env scripts/checkFamilies.js",
 		"test:db": "node --env-file=.env scripts/testDatabase.js",
 		"db:seed": "node --env-file=.env scripts/seed.js",
+		"db:samples:import": "node --env-file=.env scripts/importSamples.js",
+		"db:samples:check": "node --env-file=.env scripts/checkSamples.js",
 		"build:views": "node scripts/buildViews.js"
 	},
 	"repository": {

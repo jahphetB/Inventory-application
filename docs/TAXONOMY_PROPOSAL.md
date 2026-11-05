@@ -2,6 +2,8 @@
 
 Status: the user approved the recommended 70-category option and completion of Step 3. Remove the legacy Drums category only while it remains empty. The approved catalog contains 350 new samples; the four existing instruments remain additional. Production changes are not authorized.
 
+Step 3 is now implemented locally: 70 categories, 350 imported samples, and 354 total instruments. See [the import/verification handoff](SAMPLE_DATA.md) for the completed workflow and its safeguards.
+
 ## Proposed catalog
 
 The original 70-category proposal remains the recommended catalog. Every approved category will receive five new, distinct sample instruments. Existing instruments do not count toward those five and will remain untouched.
@@ -19,7 +21,7 @@ These are practical catalog groups, not every subdivision of Hornbostel–Sachs.
 
 ## Final legacy-category decision
 
-The local database currently has three categories and four legitimate instruments. Guitars and Digital pianos are already in the proposed catalog. The remaining category, Drums, is empty and broader than the proposed drum categories.
+At proposal time, the local database had three categories and four legitimate instruments. Guitars and Digital pianos were already in the proposed catalog. The remaining category, Drums, was empty and broader than the proposed drum categories.
 
 - **Recommended: remove only the empty Drums category after approval.** The final catalog has 70 categories, 350 new sample instruments, and 354 total instruments based on the current local inventory. Reuse the existing Guitars and Digital pianos category IDs and add 68 categories.
 - **Alternative: keep Drums as an additional general category.** The final catalog has 71 categories, 355 new sample instruments, and 359 total instruments. Its five samples would cover drum types outside the named categories rather than duplicating the specific categories' entries.

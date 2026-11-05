@@ -52,7 +52,9 @@ npm run db:families:check
 
 This read-only check reports all five families, category/item counts, unresolved categories, and global Uncategorized items. If an older Step 1 checkout created unresolved categories during the compatibility transition, explicitly classify them before applying migration 003. Do not choose a default family just to bypass the check.
 
-For a fresh database, create the core tables, configure the local environment, run the migrations, and then optionally run `npm run db:seed`. The initial seed now supplies valid family IDs and uses Digital pianos rather than Keyboards. Its existing lock, transaction, and refusal to change populated tables remain intact. For a populated database, skip initial seeding and migrate existing records. The separate additive sample-data workflow belongs to Step 3.
+For a fresh database, create the core tables, configure the local environment, run the migrations, and then optionally run `npm run db:seed`. The initial seed now supplies valid family IDs and uses Digital pianos rather than Keyboards. Its existing lock, transaction, and refusal to change populated tables remain intact. For a populated database, skip initial seeding and migrate existing records. The separate [additive sample-data workflow](SAMPLE_DATA.md) was added in Step 3.
+
+Migration `004_add_sample_catalog_provenance.sql` adds two metadata tables for stable sample keys, definition hashes, source identities, and deletion tombstones. It changes no existing inventory records. The catalog importer is a separate explicit command; running migrations does not import samples or remove Drums.
 
 ## Production boundary
 
