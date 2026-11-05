@@ -10,6 +10,8 @@
 		<%- include("../partials/navigation") %>
 
 		<main class="item-form-page page-content page-content--narrow" id="main-content">
+			<% const selectedCategory = categories.find((entry) => String(entry.id) === String(item.category_id)); %>
+			<%- include("../partials/breadcrumbs", { breadcrumbs: [{ label: "Home", href: "/" }, ...(selectedCategory ? [{ label: selectedCategory.family_name, href: "/families/" + selectedCategory.family_slug }, { label: selectedCategory.name, href: "/categories/" + selectedCategory.id }] : []), ...(item.id ? [{ label: item.name, href: "/items/" + item.id }] : []), { label: title }] }) %>
 			<header class="page-header">
 				<p class="page-eyebrow">Instrument library</p>
 				<h1 class="item-form-page__title page-title"><%= title %></h1>
@@ -123,7 +125,7 @@
 								class="item-form__category-option"
 								value="<%= category.id %>"
 								<%= String(item.category_id) === String(category.id) ? "selected" : "" %>
-							><%= category.name %></option>
+							><%= category.family_name %> / <%= category.name %></option>
 						<% }); %>
 					</select>
 				</div>

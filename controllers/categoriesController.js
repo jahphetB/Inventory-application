@@ -1,10 +1,12 @@
 import {
 	getCategoryById,
 	getItemsByCategoryId,
-    createCategory,
-    updateCategory,
-    deleteCategory,
-    getCategoriesWithCounts,
+	createCategory,
+	updateCategory,
+	deleteCategory,
+	getCategoriesWithCounts,
+	getFamiliesWithCounts,
+	getFamilyBySlug,
 } from "../db/queries.js";
 
 import { validationResult } from "express-validator";
@@ -47,9 +49,9 @@ export async function getCategoryDetail(req, res, next) {
 	}
 }
 
-function renderCreateForm(
+async function renderCreateForm(
 	res,
-	category = { name: "", description: "" },
+	category = { name: "", description: "", family_id: "" },
 	errors = [],
 	status = 200,
 ) {
@@ -59,17 +61,30 @@ function renderCreateForm(
 		submitLabel: "Create category",
 		cancelUrl: "/",
 		category,
+		families: await getFamiliesWithCounts(),
 		errors,
 	});
 }
 
-export function getCategoryCreate(req, res) {
-	return renderCreateForm(res);
+export async function getCategoryCreate(req, res, next) {
+	try {
+		let familyId = "";
+		if (req.query.family !== undefined) {
+			if (typeof req.query.family !== "string") return res.status(400).send("Choose a valid family.");
+			const family = await getFamilyBySlug(req.query.family);
+			if (!family) return res.status(404).send("Family not found.");
+			familyId = String(family.id);
+		}
+		return await renderCreateForm(res, { name: "", description: "", family_id: familyId });
+	} catch (error) {
+		next(error);
+	}
 }
 
 export async function postCategoryCreate(req, res, next) {
 	const category = {
 		name: typeof req.body?.name === "string" ? req.body.name : "",
+		family_id: typeof req.body?.family_id === "string" ? req.body.family_id : "",
 		description: typeof req.body?.description === "string"
 			? req.body.description
 			: "",
@@ -78,7 +93,7 @@ export async function postCategoryCreate(req, res, next) {
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
-		return renderCreateForm(
+		return await renderCreateForm(
 			res,
 			category,
 			errors.array().map((error) => error.msg),
@@ -95,7 +110,7 @@ export async function postCategoryCreate(req, res, next) {
 			error.code === "23505" &&
 			error.constraint === "categories_name_unique"
 		) {
-			return renderCreateForm(
+			return await renderCreateForm(
 				res,
 				category,
 				["A category with this name already exists."],
@@ -122,13 +137,14 @@ function parseCategoryId(value) {
 	return id;
 }
 
-function renderCategoryEditForm(res, category, errors = [], status = 200) {
+async function renderCategoryEditForm(res, category, errors = [], status = 200) {
 	return res.status(status).render("categories/form", {
 		title: "Edit category",
 		action: `/categories/${category.id}/edit`,
 		submitLabel: "Save changes",
 		cancelUrl: `/categories/${category.id}`,
 		category,
+		families: await getFamiliesWithCounts(),
 		errors,
 	});
 }
@@ -147,7 +163,7 @@ export async function getCategoryEdit(req, res, next) {
 			return res.status(404).send("Category not found.");
 		}
 
-		return renderCategoryEditForm(res, {
+		return await renderCategoryEditForm(res, {
 			...category,
 			description: category.description ?? "",
 		});
@@ -165,6 +181,7 @@ export async function postCategoryEdit(req, res, next) {
 
 	const category = {
 		id,
+		family_id: typeof req.body?.family_id === "string" ? req.body.family_id : "",
 		name: typeof req.body?.name === "string" ? req.body.name : "",
 		description: typeof req.body?.description === "string"
 			? req.body.description
@@ -181,7 +198,7 @@ export async function postCategoryEdit(req, res, next) {
 		const errors = validationResult(req);
 
 		if (!errors.isEmpty()) {
-			return renderCategoryEditForm(
+			return await renderCategoryEditForm(
 				res,
 				category,
 				errors.array().map((error) => error.msg),
@@ -201,7 +218,7 @@ export async function postCategoryEdit(req, res, next) {
 			error.code === "23505" &&
 			error.constraint === "categories_name_unique"
 		) {
-			return renderCategoryEditForm(
+			return await renderCategoryEditForm(
 				res,
 				category,
 				["A category with this name already exists."],

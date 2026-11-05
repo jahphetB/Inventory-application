@@ -3,31 +3,15 @@ import {
 	getCategoryDetail,
 	getCategoryCreate,
 	postCategoryCreate,
-    getCategoryEdit,
-    postCategoryEdit,
-    getCategoryDelete,
-    postCategoryDelete,
+	getCategoryEdit,
+	postCategoryEdit,
+	getCategoryDelete,
+	postCategoryDelete,
 } from "../controllers/categoriesController.js";
-import { body } from "express-validator";
+import { validateCategory } from "../validators/categoryValidation.js";
 import { requireAdminPassword } from "../middleware/requireAdminPassword.js";
 
 const categoriesRouter = Router();
-
-const validateCategory = [
-	body("name")
-		.isString()
-		.withMessage("Category name must be text.")
-		.bail()
-		.trim()
-		.notEmpty()
-		.withMessage("Category name is required."),
-	body("description")
-		.optional()
-		.isString()
-		.withMessage("Description must be text.")
-		.bail()
-		.trim(),
-];
 
 categoriesRouter.get("/new", getCategoryCreate);
 categoriesRouter.post("/new", requireAdminPassword, validateCategory, postCategoryCreate);

@@ -10,6 +10,8 @@
 		<%- include("../partials/navigation") %>
 
 		<main class="category-form-page page-content page-content--narrow" id="main-content">
+			<% const selectedFamily = families.find((entry) => String(entry.id) === String(category.family_id)); %>
+			<%- include("../partials/breadcrumbs", { breadcrumbs: [{ label: "Home", href: "/" }, ...(selectedFamily ? [{ label: selectedFamily.name, href: "/families/" + selectedFamily.slug }] : []), ...(category.id ? [{ label: category.name, href: "/categories/" + category.id }] : []), { label: title }] }) %>
 			<header class="page-header">
 				<p class="page-eyebrow">Collections</p>
 				<h1 class="category-form-page__title page-title"><%= title %></h1>
@@ -28,6 +30,16 @@
 			<% } %>
 
 			<form class="category-form form-panel" action="<%= action %>" method="post">
+				<div class="form-field category-form__family-field">
+					<label class="form-field__label" for="category-family">Instrument family (required)</label>
+					<select class="form-field__input" id="category-family" name="family_id" required aria-describedby="category-family-help">
+						<option class="category-form__family-placeholder" value="" disabled <%= selectedFamily ? "" : "selected" %>>Choose a family</option>
+						<% families.forEach((entry) => { %>
+							<option class="category-form__family-option" value="<%= entry.id %>" <%= String(category.family_id) === String(entry.id) ? "selected" : "" %>><%= entry.name %></option>
+						<% }); %>
+					</select>
+					<p class="form-field__help" id="category-family-help"><%= category.id ? "Changing the family moves every instrument in this category with it." : "Choose one of the five fixed instrument families." %></p>
+				</div>
 				<div class="form-field category-form__name-field">
 					<label class="form-field__label" for="category-name">
 						Name (required)

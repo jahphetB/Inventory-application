@@ -6,11 +6,13 @@ A musical instrument inventory application built for The Odin Project. Browse co
 
 ## Features
 
+- Five fixed instrument families with Home → Family → Category → Instrument navigation, breadcrumbs, All items, and global Uncategorized views.
 - Category and instrument creation, editing, and deletion.
 - Optional categories, with unassigned instruments listed under Uncategorized.
 - Category deletion transfers its instruments to another collection or Uncategorized in one database transaction.
 - Case-insensitive unique category names, required instrument names and brands, nonnegative prices with at most two decimal places, and nonnegative whole-number stock.
 - Public browsing, with an admin password required for **every** create, edit, and delete request.
+- Categories require a fixed family; administrators can move categories between families, with their instruments following automatically.
 - Responsive forms, validation messages, shared navigation, and instrument lists.
 
 ## Stack
@@ -91,8 +93,12 @@ Set the same `ADMIN_PASSWORD` in both local files. It is independent of the data
 
 ### Check and seed
 
+Apply migrations before using the current category forms or initial seed:
+
 ```powershell
+npm run db:migrate
 npm run db:check
+npm run db:families:check
 ```
 
 If both tables are empty, load the sample inventory:
@@ -101,18 +107,11 @@ If both tables are empty, load the sample inventory:
 npm run db:seed
 ```
 
-The seed creates Guitars, Keyboards, and Drums, with Fender Player Stratocaster, Yamaha F310 Acoustic Guitar, Yamaha P-145 Digital Piano, and an Uncategorized Stentor Student Violin. Drums starts empty. The seed refuses to change a database that already contains records.
-
-After the initial seed decision, apply the versioned hierarchy migrations and inspect the family mapping:
-
-```powershell
-npm run db:migrate
-npm run db:families:check
-```
+The seed creates Guitars under Chordophones, Digital pianos under Electrophones, and Drums under Membranophones, with Fender Player Stratocaster, Yamaha F310 Acoustic Guitar, Yamaha P-145 Digital Piano, and an Uncategorized Stentor Student Violin. Drums starts empty. The seed refuses to change a database that already contains records.
 
 The migrations preserve existing instrument records and add five fixed instrument families. They map Guitars to Chordophones, Drums to Membranophones, and rename the inspected Keyboards category to Digital pianos under Electrophones. Unexpected categories or conflicting mappings stop the transaction for review. On a populated database, skip initial seeding; do not recreate its tables.
 
-Step 1 is an additive compatibility stage: existing category forms still work, and a category they create without a family will be reported by the family check. Required family selection and hierarchical navigation arrive in Step 2. See [migration details](docs/MIGRATIONS.md) and the [before and planned-after Mermaid diagrams](docs/PROJECT_STRUCTURE.md).
+The Step 2 constraint requires a valid family for every category. Existing items retain their fields and category IDs. An item's family is derived from its category; the item form submits only the category, labelled with its family. Global Uncategorized remains available outside the five families. See [migration details](docs/MIGRATIONS.md) and the [before and planned-after Mermaid diagrams](docs/PROJECT_STRUCTURE.md).
 
 ### Run development
 
@@ -149,7 +148,7 @@ npm run db:check
 npm run test:db
 ```
 
-The automated authorization tests use Node's built-in test runner. They cover missing configuration, exact password matching, concurrent Worker configuration isolation, and all six protected POST routes. `npm test` does not connect to a database and skips the opt-in migration tests. `npm run test:db` verifies migrations, fixed-family protection, record preservation, conflict handling, and query counts in isolated local schemas. `db:check` separately verifies the configured database and table access.
+The automated authorization tests use Node's built-in test runner. They cover missing configuration, exact password matching, concurrent Worker configuration isolation, and all six protected POST routes. `npm test` does not connect to a database and skips the opt-in integration tests. `npm run test:db` rebuilds the templates and verifies migrations, native/compiled browsing, family validation, protected CRUD, transfer rollback, and the guarded initial seed in isolated local schemas. `db:check` separately verifies the configured database and table access.
 
 ## Production deployment
 

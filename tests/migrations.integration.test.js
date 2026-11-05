@@ -29,12 +29,24 @@ test("migrations are repeatable and create exactly five immutable families", opt
 	});
 });
 
-test("category foreign keys reject invalid families while the compatibility bridge permits null", options, async () => {
+test("categories require a non-null valid family after the final constraint", options, async () => {
 	await withSchema(async (client) => {
 		await runMigrations(client);
 		await assert.rejects(client.query("INSERT INTO categories (name, family_id) VALUES ('Invalid family', 99)"), (error) => error.code === "23503");
-		await client.query("INSERT INTO categories (name) VALUES ('Legacy form compatibility')");
-		assert.equal((await client.query("SELECT family_id FROM categories")).rows[0].family_id, null);
+		await assert.rejects(client.query("INSERT INTO categories (name) VALUES ('Missing family')"), (error) => error.code === "23502");
+		await client.query("INSERT INTO categories (name, family_id) VALUES ('Valid family', 3)");
+		assert.equal((await client.query("SELECT family_id FROM categories")).rows[0].family_id, 3);
+	});
+});
+
+test("the final constraint refuses unresolved legacy records without deleting them", options, async () => {
+	await withSchema(async (client) => {
+		for (const name of ["001_add_instrument_families.sql", "002_map_existing_categories.sql"]) {
+			await client.query(await readFile(new URL("../db/migrations/" + name, import.meta.url), "utf8"));
+		}
+		await client.query("INSERT INTO categories (name) VALUES ('Needs explicit classification')");
+		await assert.rejects(client.query(await readFile(new URL("../db/migrations/003_require_category_family.sql", import.meta.url), "utf8")), (error) => error.code === "23502");
+		assert.equal((await client.query("SELECT name FROM categories")).rows[0].name, "Needs explicit classification");
 	});
 });
 

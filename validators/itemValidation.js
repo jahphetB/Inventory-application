@@ -73,7 +73,7 @@ export const validateItem = [
 
 			const category = await getCategoryById(id);
 
-			if (!category) {
+			if (!category || category.family_id === null) {
 				throw new Error("This category no longer exists. Choose another.");
 			}
 

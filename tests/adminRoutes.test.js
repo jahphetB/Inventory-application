@@ -57,14 +57,26 @@ test("every mutation is unavailable when the admin password is unconfigured", as
 
 test("correct password reaches normal validation and is never echoed", async () => {
 	process.env.ADMIN_PASSWORD = "test-only-password";
-	const response = await fetch(base + "/categories/new", {
-		method: "POST",
-		body: new URLSearchParams({ name: "", admin_password: "test-only-password" }),
-	});
-	assert.equal(response.status, 400);
-	const html = await response.text();
-	assert.ok(html.includes("Category name is required."));
-	assert.ok(!html.includes("test-only-password"));
-	assert.ok(html.includes('type="password"'));
-	assert.equal(databaseQueries, 0);
+	const guardedQuery = pool.query;
+	let reads = 0;
+	pool.query = async (sql) => {
+		assert.ok(sql.includes("FROM families"), "Only the form's family list may be read");
+		reads += 1;
+		return { rows: [{ id: 3, slug: "chordophones", name: "Chordophones", category_count: 0, item_count: 0 }] };
+	};
+	try {
+		const response = await fetch(base + "/categories/new", {
+			method: "POST",
+			body: new URLSearchParams({ name: "", admin_password: "test-only-password" }),
+		});
+		assert.equal(response.status, 400);
+		const html = await response.text();
+		assert.ok(html.includes("Category name is required."));
+		assert.ok(!html.includes("test-only-password"));
+		assert.ok(html.includes('type="password"'));
+		assert.equal(databaseQueries, 0);
+		assert.equal(reads, 1);
+	} finally {
+		pool.query = guardedQuery;
+	}
 });

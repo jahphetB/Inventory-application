@@ -10,6 +10,7 @@
 		<%- include("../partials/navigation") %>
 
 		<main class="category-delete-page page-content page-content--narrow" id="main-content">
+			<%- include("../partials/breadcrumbs", { breadcrumbs: [{ label: "Home", href: "/" }, { label: category.family_name, href: "/families/" + category.family_slug }, { label: category.name, href: "/categories/" + category.id }, { label: title }] }) %>
 			<header class="page-header">
 				<p class="page-eyebrow">Collections</p>
 				<h1 class="category-delete-page__title page-title"><%= title %></h1>
@@ -44,6 +45,7 @@
 					<p class="category-delete-form__transfer-notice">
 						Choose where to move every instrument before deleting this category.
 						The instruments will be preserved.
+						Their family follows the destination category.
 					</p>
 
 					<div class="form-field category-delete-form__destination-field">
@@ -74,7 +76,7 @@
 									class="category-delete-form__destination-option"
 									value="<%= destination.id %>"
 									<%= selectedDestination === String(destination.id) ? "selected" : "" %>
-								><%= destination.name %></option>
+								><%= destination.family_name %> / <%= destination.name %></option>
 							<% }); %>
 						</select>
 					</div>

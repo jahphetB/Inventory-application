@@ -12,6 +12,18 @@ Work proceeds one meaningful step at a time. After a step is verified, make at l
 - Added [current-before and final-target Mermaid diagrams](PROJECT_STRUCTURE.md).
 - Kept category family assignment nullable only for the Step 1 / Step 2 transition. No family mutation routes were added.
 
+## Step 2: navigation and family-aware operations
+
+- Home lists exactly five fixed families. `/families/:slug` lists only that family's categories; category pages lead to instruments and details through shared breadcrumbs. All items and global Uncategorized remain accessible.
+- Family routing is read-only. Even a valid admin password cannot reach family create/edit/delete endpoints; database mutation protection remains in place.
+- Category create/edit forms require a fixed family. A family-page Add category link preselects it. Moving a category updates one relationship, so all its instruments follow automatically.
+- Instrument forms submit only a category ID and display family/category labels. The selected category's family is the source of truth; invalid or nonexistent category relationships are rejected. Category pages offer a preselected Add instrument link.
+- Category deletion shows family/category transfer destinations and permits explicit cross-family or Uncategorized transfers. Tests force a failure after the item update and verify that both the transfer and deletion roll back together.
+- Applied migration 003 locally after confirming no unresolved categories. All existing family, category, and item records match the local pre-step snapshot exactly. The ignored snapshot is `generated/pre-step-two-local-data.json`.
+- The guarded initial seed now runs after migrations and supplies valid families. It still refuses populated inventory and never overwrites existing records.
+- Regression checks cover six authorization tests and thirteen database/application integration tests, including native and compiled EJS paths. Production remains unchanged.
+- Browser checks passed 48 page/runtime/viewport combinations across Node and Wrangler at desktop and mobile widths. Temporary test servers and browser sessions were stopped; existing inventory was compared with the local pre-step snapshot and remained unchanged.
+
 ## Approved decisions for the remaining steps
 
 - Keep one global Uncategorized view outside the five families, using nullable `items.category_id`.
@@ -19,7 +31,7 @@ Work proceeds one meaningful step at a time. After a step is verified, make at l
 - Admins may move a category between families; items follow their category. Transfers may cross families, with explicit family/category labels. Keep transfer and deletion atomic.
 - Retain global, case-insensitive category-name uniqueness.
 - Require the existing admin password for all category/item create, edit, and delete requests. No user accounts or registration.
-- Step 2: family-aware navigation, forms, validation, and final required-family constraint. Check for any categories created during the compatibility transition before enforcing it.
+- Step 2 is implemented below; Steps 3 and 4 still require their separate checkpoints.
 - Step 3: reconfirm the complete taxonomy and exact counts before creating sample inventory. The initial proposal has 70 catalog categories and at least 350 new sample entries, plus retained existing inventory. The legitimate legacy Drums category is retained and must be accounted for in the final count. Use verified real products where practical and explicitly fictional identities otherwise; prices and stock are fictional demonstration data.
 - Preserve the legacy seed's populated-database safeguard. Add a separate, transactional, rerunnable import workflow with stable sample keys; do not overwrite user inventory.
 - Step 4: remove filler, add an original SVG favicon through a shared head mechanism, preserve the dark studio theme, and complete local/runtime/data/production-build verification.

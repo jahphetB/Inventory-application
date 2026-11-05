@@ -1,11 +1,12 @@
 import {
 	getAllItems,
 	getUncategorizedItems,
-    getItemById,
-    createItem,
-    getCategoriesWithCounts,
-    updateItem,
-    deleteItem,
+	getItemById,
+	createItem,
+	getCategoriesWithCounts,
+	updateItem,
+	deleteItem,
+	getCategoryById,
 } from "../db/queries.js";
 
 import { validationResult } from "express-validator";
@@ -89,13 +90,21 @@ async function renderItemCreateForm(res, item, errors = [], status = 200) {
 
 export async function getItemCreate(req, res, next) {
 	try {
+		let selectedCategory = "";
+		if (req.query.category !== undefined) {
+			const id = parseItemId(req.query.category);
+			if (id === null) return res.status(404).send("Category not found.");
+			const category = await getCategoryById(id);
+			if (!category || category.family_id === null) return res.status(404).send("Category not found.");
+			selectedCategory = String(category.id);
+		}
 		await renderItemCreateForm(res, {
 			name: "",
 			brand: "",
 			description: "",
 			price: "",
 			stock_quantity: "0",
-			category_id: "",
+			category_id: selectedCategory,
 		});
 	} catch (error) {
 		next(error);

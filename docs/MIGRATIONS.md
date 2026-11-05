@@ -27,7 +27,7 @@ Migration `001_add_instrument_families.sql` creates exactly these fixed identiti
 
 A database trigger rejects family inserts, updates, deletes, and truncation. There are no application endpoints for family mutations. This protects ordinary database writes; a database owner who deliberately alters the schema can still remove database protections.
 
-`categories.family_id` references those identities. It temporarily accepts `NULL` while the Step 1 schema coexists with the old category forms. Step 2 will require a valid family in write requests and add the final `NOT NULL` migration after checking for unmapped categories. No family is stored independently on an item: an assigned item's family always comes from its category. Items with `category_id IS NULL` remain globally Uncategorized.
+`categories.family_id` references those identities. Migration 001 initially allowed `NULL` for the Step 1 compatibility bridge. Migration `003_require_category_family.sql` finalizes `NOT NULL` in Step 2 and refuses unresolved categories without deleting or guessing their classification. The category forms and server validation now require one of the five fixed IDs. No family is stored independently on an item: an assigned item's family always comes from its category. Items with `category_id IS NULL` remain globally Uncategorized.
 
 Global case-insensitive category-name uniqueness and existing item fields, identity values, foreign keys, and transactional transfers remain unchanged.
 
@@ -50,9 +50,9 @@ The local-only cleanup preceding the migration removed the explicitly approved n
 npm run db:families:check
 ```
 
-This read-only check reports all five families, category/item counts, unresolved categories, and global Uncategorized items. Categories created through the old forms during the compatibility transition are deliberately reported as unresolved. Step 2 must resolve those records explicitly before enforcing `NOT NULL`.
+This read-only check reports all five families, category/item counts, unresolved categories, and global Uncategorized items. If an older Step 1 checkout created unresolved categories during the compatibility transition, explicitly classify them before applying migration 003. Do not choose a default family just to bypass the check.
 
-For a fresh database that needs the original sample data, run the existing guarded seed **before** the first migration. For a populated database, skip that seed and migrate existing records. The legacy seed still refuses any populated database; the separate additive sample-data workflow belongs to Step 3.
+For a fresh database, create the core tables, configure the local environment, run the migrations, and then optionally run `npm run db:seed`. The initial seed now supplies valid family IDs and uses Digital pianos rather than Keyboards. Its existing lock, transaction, and refusal to change populated tables remain intact. For a populated database, skip initial seeding and migrate existing records. The separate additive sample-data workflow belongs to Step 3.
 
 ## Production boundary
 
@@ -60,6 +60,6 @@ No production database was inspected or migrated for this local step, and the fe
 
 ## Tests
 
-`npm test` runs database-free authorization tests and skips the opt-in migration integration tests. `npm run test:db` requires an explicit local `PGHOST` and runs the integration tests in newly created, randomly named schemas. Only those test schemas are dropped during cleanup; application tables are not dropped or recreated.
+`npm test` runs database-free authorization tests and skips the opt-in database integration tests. `npm run test:db` requires an explicit local `PGHOST`, builds the templates, and runs migration and HTTP application tests in newly created, randomly named schemas. It checks both native and compiled EJS rendering, authorized/rejected writes, category moves, cross-family and Uncategorized transfers, and rollback when category deletion fails after a transfer update. Only those test schemas are dropped during cleanup; application tables are not dropped or recreated.
 
 See [the before and planned-after diagrams](PROJECT_STRUCTURE.md) for the complete architecture target. Only the work described as implemented for the current step should be treated as complete.

@@ -133,12 +133,12 @@ export async function getItemsByCategoryId(categoryId) {
 	return rows;
 }
 
-export async function createCategory({ name, description }) {
+export async function createCategory({ name, description, family_id }) {
 	const { rows } = await pool.query(`
-		INSERT INTO categories (name, description)
-		VALUES ($1, $2)
+		INSERT INTO categories (name, description, family_id)
+		VALUES ($1, $2, $3)
 		RETURNING id;
-	`, [name, description || null]);
+	`, [name, description || null, family_id]);
 
 	return rows[0];
 }
@@ -167,13 +167,13 @@ export async function createItem(item) {
 	return rows[0];
 }
 
-export async function updateCategory(id, { name, description }) {
+export async function updateCategory(id, { name, description, family_id }) {
 	const { rows } = await pool.query(`
 		UPDATE categories
-		SET name = $1, description = $2
-		WHERE id = $3
+		SET name = $1, description = $2, family_id = $3
+		WHERE id = $4
 		RETURNING id;
-	`, [name, description || null, id]);
+	`, [name, description || null, family_id, id]);
 
 	return rows[0];
 }
