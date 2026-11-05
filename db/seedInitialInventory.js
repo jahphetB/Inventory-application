@@ -102,4 +102,3 @@ export async function seedInitialInventory(client) {
 		throw error;
 	}
 }
-
