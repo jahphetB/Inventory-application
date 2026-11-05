@@ -206,12 +206,6 @@
 	overflow-wrap: anywhere;
 }
 
-.page-description {
-	max-width: 60ch;
-	margin: 1rem 0 0;
-	color: var(--color-muted);
-}
-
 .category-section__header,
 .item-list-page__section-header {
 	display: flex;
