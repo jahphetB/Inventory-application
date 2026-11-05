@@ -1,5 +1,42 @@
 import pool from "./pool.js";
 
+export async function getFamiliesWithCounts() {
+	const { rows } = await pool.query(`
+		SELECT families.id, families.slug, families.name,
+			COUNT(DISTINCT categories.id)::INTEGER AS category_count,
+			COUNT(items.id)::INTEGER AS item_count
+		FROM families
+		LEFT JOIN categories ON categories.family_id = families.id
+		LEFT JOIN items ON items.category_id = categories.id
+		GROUP BY families.id
+		ORDER BY LOWER(families.name), families.id;
+	`);
+	return rows;
+}
+
+export async function getFamilyBySlug(slug) {
+	const { rows } = await pool.query("SELECT id, slug, name FROM families WHERE slug = $1", [slug]);
+	return rows[0];
+}
+
+export async function getCategoriesByFamilyId(familyId) {
+	const { rows } = await pool.query(`
+		SELECT categories.id, categories.name, categories.description,
+			categories.family_id, COUNT(items.id)::INTEGER AS item_count
+		FROM categories
+		LEFT JOIN items ON items.category_id = categories.id
+		WHERE categories.family_id = $1
+		GROUP BY categories.id
+		ORDER BY LOWER(categories.name), categories.id;
+	`, [familyId]);
+	return rows;
+}
+
+export async function getUnmappedCategories() {
+	const { rows } = await pool.query("SELECT id, name FROM categories WHERE family_id IS NULL ORDER BY LOWER(name), id");
+	return rows;
+}
+
 export async function getCategoriesWithCounts() {
 	const { rows } = await pool.query(`
 		SELECT
@@ -68,7 +105,7 @@ export async function getItemById(id) {
 
 export async function getCategoryById(id) {
 	const { rows } = await pool.query(`
-		SELECT id, name, description
+		SELECT id, name, description, family_id
 		FROM categories
 		WHERE id = $1;
 	`, [id]);

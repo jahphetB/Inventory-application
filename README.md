@@ -103,6 +103,17 @@ npm run db:seed
 
 The seed creates Guitars, Keyboards, and Drums, with Fender Player Stratocaster, Yamaha F310 Acoustic Guitar, Yamaha P-145 Digital Piano, and an Uncategorized Stentor Student Violin. Drums starts empty. The seed refuses to change a database that already contains records.
 
+After the initial seed decision, apply the versioned hierarchy migrations and inspect the family mapping:
+
+```powershell
+npm run db:migrate
+npm run db:families:check
+```
+
+The migrations preserve existing instrument records and add five fixed instrument families. They map Guitars to Chordophones, Drums to Membranophones, and rename the inspected Keyboards category to Digital pianos under Electrophones. Unexpected categories or conflicting mappings stop the transaction for review. On a populated database, skip initial seeding; do not recreate its tables.
+
+Step 1 is an additive compatibility stage: existing category forms still work, and a category they create without a family will be reported by the family check. Required family selection and hierarchical navigation arrive in Step 2. See [migration details](docs/MIGRATIONS.md) and the [before and planned-after Mermaid diagrams](docs/PROJECT_STRUCTURE.md).
+
 ### Run development
 
 Normal Node development:
@@ -135,11 +146,14 @@ The password field is never populated from a submitted value. The server compare
 npm test
 npm run build:views
 npm run db:check
+npm run test:db
 ```
 
-The automated authorization tests use Node's built-in test runner. They cover missing configuration, exact password matching, concurrent Worker configuration isolation, and all six protected POST routes. They do not connect to a database. `db:check` separately verifies the configured database and table access.
+The automated authorization tests use Node's built-in test runner. They cover missing configuration, exact password matching, concurrent Worker configuration isolation, and all six protected POST routes. `npm test` does not connect to a database and skips the opt-in migration tests. `npm run test:db` verifies migrations, fixed-family protection, record preservation, conflict handling, and query counts in isolated local schemas. `db:check` separately verifies the configured database and table access.
 
 ## Production deployment
+
+The hierarchy feature branch requires an approved production database migration before deploying code that reads the new schema. The local migration does not update production. Obtain separate approval for the production backup, mapping review, migration, and deployment; follow the standard commands below only as part of that approved release. See [the production boundary](docs/MIGRATIONS.md#production-boundary).
 
 The existing production Worker uses the `production` environment in `wrangler.jsonc`, including its Hyperdrive binding and static assets. Local PostgreSQL settings are not production configuration.
 

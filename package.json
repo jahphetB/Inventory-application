@@ -9,6 +9,7 @@
 		"start": "node --env-file=.env server.js",
 		"db:check": "node --env-file=.env scripts/checkDb.js",
 		"db:migrate": "node --env-file=.env scripts/migrate.js",
+		"db:families:check": "node --env-file=.env scripts/checkFamilies.js",
 		"test:db": "node --env-file=.env scripts/testDatabase.js",
 		"db:seed": "node --env-file=.env scripts/seed.js",
 		"build:views": "node scripts/buildViews.js"

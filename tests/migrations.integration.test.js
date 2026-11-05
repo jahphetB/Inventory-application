@@ -6,6 +6,8 @@ import path from "node:path";
 import test from "node:test";
 import pg from "pg";
 import { runMigrations } from "../db/migrate.js";
+import { runWithDatabase } from "../db/pool.js";
+import { getFamiliesWithCounts, getFamilyBySlug, getCategoriesByFamilyId, getUnmappedCategories } from "../db/queries.js";
 
 const enabled = process.env.INVENTORY_DATABASE_TESTS === "true";
 const options = { skip: !enabled };
@@ -93,4 +95,60 @@ test("Windows line endings do not change checksums, but edited SQL is rejected",
 		assert.equal(path.dirname(directory), path.resolve(os.tmpdir()));
 		await rm(directory, { recursive: true });
 	}
+});
+
+test("approved category mapping preserves item records, category IDs, and global Uncategorized", options, async () => {
+	await withSchema(async (client) => {
+		await client.query("INSERT INTO categories (name, description) VALUES ('Guitars', 'Preserve guitar description'), ('Keyboards', 'Preserve keyboard description'), ('Drums', 'Preserve drum description')");
+		await client.query(`INSERT INTO items (name, brand, description, price, stock_quantity, category_id) VALUES
+			('Player Stratocaster', 'Fender', 'Keep this', 799.99, 5, 1),
+			('F310 Acoustic Guitar', 'Yamaha', NULL, 199.99, 0, 1),
+			('P-145 Digital Piano', 'Yamaha', 'Keep this too', 499.99, 3, 2),
+			('Student Violin', 'Stentor', NULL, 149.99, 2, NULL)`);
+		const originalItems = (await client.query("SELECT * FROM items ORDER BY id")).rows;
+		const originalCategories = (await client.query("SELECT * FROM categories ORDER BY id")).rows;
+		await runMigrations(client);
+		assert.deepEqual((await client.query("SELECT * FROM items ORDER BY id")).rows, originalItems);
+		const mapped = (await client.query("SELECT * FROM categories ORDER BY id")).rows;
+		assert.deepEqual(mapped.map(({ family_id, ...row }) => row), originalCategories.map((row) => ({ ...row, name: row.name === "Keyboards" ? "Digital pianos" : row.name })));
+		assert.deepEqual(mapped.map((row) => row.family_id), [3, 5, 2]);
+		await runWithDatabase(client, async () => {
+			assert.equal((await getFamilyBySlug("chordophones")).id, 3);
+			assert.equal(await getFamilyBySlug("not-a-family"), undefined);
+			assert.equal(await getFamilyBySlug("chordophones' OR '1'='1"), undefined);
+			assert.deepEqual(await getUnmappedCategories(), []);
+			assert.deepEqual((await getCategoriesByFamilyId(3)).map(({ name, item_count }) => ({ name, item_count })), [{ name: "Guitars", item_count: 2 }]);
+			const counts = await getFamiliesWithCounts();
+			assert.deepEqual(counts.map((row) => row.name), ["Aerophones", "Chordophones", "Electrophones", "Idiophones", "Membranophones"]);
+			assert.equal(counts.find((row) => row.id === 3).category_count, 1);
+			assert.equal(counts.find((row) => row.id === 3).item_count, 2);
+			assert.equal(counts.reduce((sum, row) => sum + row.item_count, 0), 3);
+		});
+		await runMigrations(client);
+		assert.deepEqual((await client.query("SELECT * FROM items ORDER BY id")).rows, originalItems);
+	});
+});
+
+test("unmapped categories and ambiguous keyboards stop the batch without changing existing data", options, async () => {
+	for (const entry of [
+		{ name: "Unknown category", item: null, pattern: /Unmapped categories/ },
+		{ name: "Keyboards", item: ["Acoustic Piano", "Example"], pattern: /Review the existing Keyboards/ },
+	]) {
+		await withSchema(async (client) => {
+			await client.query("INSERT INTO categories (name) VALUES ($1)", [entry.name]);
+			if (entry.item) await client.query("INSERT INTO items (name, brand, price, category_id) VALUES ($1, $2, 10, 1)", entry.item);
+			const before = (await client.query("SELECT * FROM categories")).rows;
+			await assert.rejects(runMigrations(client), entry.pattern);
+			assert.deepEqual((await client.query("SELECT * FROM categories")).rows, before);
+			assert.equal((await client.query("SELECT to_regclass('families') AS families")).rows[0].families, null);
+		});
+	}
+});
+
+test("a Digital pianos name collision is reported rather than merged or deleted", options, async () => {
+	await withSchema(async (client) => {
+		await client.query("INSERT INTO categories (name) VALUES ('Keyboards'), ('Digital pianos')");
+		await assert.rejects(runMigrations(client), /both exist/);
+		assert.equal((await client.query("SELECT COUNT(*)::int AS count FROM categories")).rows[0].count, 2);
+	});
 });

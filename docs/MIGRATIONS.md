@@ -31,6 +31,33 @@ A database trigger rejects family inserts, updates, deletes, and truncation. The
 
 Global case-insensitive category-name uniqueness and existing item fields, identity values, foreign keys, and transactional transfers remain unchanged.
 
+## Existing category mapping
+
+Migration `002_map_existing_categories.sql` implements the approved mapping:
+
+| Existing category | Result | Family |
+| --- | --- | --- |
+| Guitars | Same name and ID | Chordophones |
+| Drums | Same name and ID | Membranophones |
+| Keyboards | Renamed to Digital pianos; same ID | Electrophones |
+| Digital pianos, if already present without Keyboards | Same name and ID | Electrophones |
+
+The migration refuses unmapped categories, conflicting family assignments, a Keyboards/Digital pianos name collision, or unexpected instruments in Keyboards. It does not guess, merge categories, move unknown items, or delete records. The approved Keyboards mapping is limited to the inspected Yamaha P-145 Digital Piano. Each pending batch rolls back on these conflicts.
+
+The local-only cleanup preceding the migration removed the explicitly approved nonsensical `Bothing` category and its `My botheing` item. The legitimate Guitars, Drums, digital piano, guitars, and Uncategorized violin were preserved. A complete local snapshot is retained in ignored `generated/pre-hierarchy-local-data.json`. That cleanup is not part of the migrations and will never run automatically against another database.
+
+```powershell
+npm run db:families:check
+```
+
+This read-only check reports all five families, category/item counts, unresolved categories, and global Uncategorized items. Categories created through the old forms during the compatibility transition are deliberately reported as unresolved. Step 2 must resolve those records explicitly before enforcing `NOT NULL`.
+
+For a fresh database that needs the original sample data, run the existing guarded seed **before** the first migration. For a populated database, skip that seed and migrate existing records. The legacy seed still refuses any populated database; the separate additive sample-data workflow belongs to Step 3.
+
+## Production boundary
+
+No production database was inspected or migrated for this local step, and the feature branch was not deployed. Before production migration, obtain approval, inspect its actual category/item mappings, take a backup, and rehearse the migration against a separate copy. Resolve unexpected categories without modifying already applied migration files. The final release must coordinate schema enforcement with the family-aware forms from Step 2; do not apply the final constraint while the old application is still accepting category writes.
+
 ## Tests
 
 `npm test` runs database-free authorization tests and skips the opt-in migration integration tests. `npm run test:db` requires an explicit local `PGHOST` and runs the integration tests in newly created, randomly named schemas. Only those test schemas are dropped during cleanup; application tables are not dropped or recreated.
