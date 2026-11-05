@@ -35,17 +35,24 @@ Work proceeds one meaningful step at a time. After a step is verified, make at l
 - Tests cover fresh/initially seeded databases, case-insensitive reuse, user edits/deletions/transfers, concurrent reruns, conflict rollback, and later additive revisions. See [sample-data documentation](SAMPLE_DATA.md) for commands, source identities, archives, and production boundaries.
 - Verification passed ten database-free authorization/catalog tests and twenty-one database/application integration tests. Both Node and Wrangler rendered all five families, all seventy category pages, representative sample details, the 354-item list, category selectors, and the original Uncategorized violin.
 
-## Approved decisions for the remaining steps
+## Step 4: cleanup and verification
+
+- Removed the requested promotional sentence and similar nonfunctional form/list copy while preserving labels, validation messages, empty states, and deletion/transfer warnings.
+- Added an original SVG favicon and shared head partial used by all nine pages in native and compiled rendering.
+- Verified the existing authorization/catalog tests and isolated database/application integration tests, the real local sample integrity check, representative Node/Workers pages and SVG/CSS delivery, and mobile/desktop layouts. A production Workers dry run succeeded without deployment or production database access.
+- Production still requires a separately approved backup, actual-data/mapping review, migrations, sample import, deployment, and live verification. See [migration details](MIGRATIONS.md) and [sample import guidance](SAMPLE_DATA.md).
+
+## Approved decisions
 
 - Keep one global Uncategorized view outside the five families, using nullable `items.category_id`.
 - Use practical catalog classification: acoustic/electric strings stay in Chordophones; digital pianos and electronic instruments belong in Electrophones. This follows the user's Stratocaster example rather than claiming strict expanded MIMO classification.
 - Admins may move a category between families; items follow their category. Transfers may cross families, with explicit family/category labels. Keep transfer and deletion atomic.
 - Retain global, case-insensitive category-name uniqueness.
 - Require the existing admin password for all category/item create, edit, and delete requests. No user accounts or registration.
-- Steps 2 and 3 are implemented; Step 4 still requires its separate checkpoint.
+- All four local steps are implemented. Production migration and deployment remain separate decisions.
 - The user approved the final Step 3 option: 70 catalog categories, 350 new samples, and removal of the still-empty legacy Drums category. Existing inventory remains additional. Product identities are verified where practical and explicitly fictional otherwise; prices and stock are fictional demonstration data.
 - Preserve the legacy seed's populated-database safeguard. Add a separate, transactional, rerunnable import workflow with stable sample keys; do not overwrite user inventory.
-- Step 4: remove filler, add an original SVG favicon through a shared head mechanism, preserve the dark studio theme, and complete local/runtime/data/production-build verification.
+- The dark studio theme, responsive cards, and functional confirmation text remain in place.
 
 ## Release and Git boundaries
 

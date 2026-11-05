@@ -1,6 +1,6 @@
 # Project structure: before and planned after
 
-The first diagram records the working application at baseline commit `a33c5e2`, before the instrument-family reorganization. The second is the approved final target, not a claim that all four steps are implemented. Both diagrams use the existing Express/EJS/PostgreSQL architecture.
+The first diagram records the working application at baseline commit `a33c5e2`, before the instrument-family reorganization. The second records the completed local structure after all four steps. Both diagrams use the existing Express/EJS/PostgreSQL architecture.
 
 ## Before the hierarchy changes
 
@@ -52,7 +52,7 @@ flowchart TD
 	Config["wrangler.jsonc · production assets + Hyperdrive; ignored local env files"] -.-> entries
 ```
 
-## Approved final target after all four steps
+## After the hierarchy changes
 
 ```mermaid
 flowchart TD
@@ -86,4 +86,4 @@ flowchart TD
 	Docs["README + migration/seed documentation + release instructions"] -.-> Checks
 ```
 
-The planned importer filenames and provenance storage will be finalized in Step 3. No additional item-category table, user-account system, or framework is planned. Production migration and deployment require separate approval; pushing this feature branch does not authorize either action.
+The hierarchy uses existing item records and two sample-provenance tables; it adds no third category table or user-account system. Production migration and deployment require separate approval; pushing this feature branch does not authorize either action.
