@@ -3,6 +3,7 @@ import app from "./app.js";
 import templates from "./generated/views.js";
 import { configureCompiledViews } from "./rendering/compiledViews.js";
 import { createDatabasePool, runWithDatabase } from "./db/pool.js";
+import { runWithAdminPassword } from "./security/adminPassword.js";
 
 configureCompiledViews(app, templates);
 
@@ -43,9 +44,12 @@ export default {
 		const databasePool = createDatabasePool(getDatabaseOptions(env));
 
 		try {
-			return await runWithDatabase(
-				databasePool,
-				() => handleAsNodeRequest(8080, request),
+			return await runWithAdminPassword(
+				env.ADMIN_PASSWORD,
+				() => runWithDatabase(
+					databasePool,
+					() => handleAsNodeRequest(8080, request),
+				),
 			);
 		} finally {
 			ctx.waitUntil(

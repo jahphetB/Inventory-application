@@ -1,0 +1,7 @@
+LOCAL_DEVELOPMENT="true"
+PGHOST="localhost"
+PGPORT="5432"
+PGDATABASE="inventory_db"
+PGUSER="inventory_app"
+PGPASSWORD=""
+ADMIN_PASSWORD=""

@@ -22,6 +22,7 @@ const templateLocals = [
 	"destinations",
 	"hasItems",
 	"selectedDestination",
+	"message",
 ];
 
 function escapeHTML(value) {

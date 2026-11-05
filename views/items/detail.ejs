@@ -4,19 +4,23 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
 	</head>
 	<body class="inventory-page">
-		<main class="item-detail-page">
-			<header class="item-detail-page__header">
-				<a class="item-detail-page__home-link" href="/">Home</a>
-				<a class="item-detail-page__items-link" href="/items">All items</a>
-				<h1 class="item-detail-page__title"><%= item.name %></h1>
-                <a class="item-detail-page__edit-link" href="/items/<%= item.id %>/edit">
-                    Edit instrument
-                </a>
-                <a class="item-detail-page__delete-link" href="/items/<%= item.id %>/delete">
-                    Delete instrument
-                </a>
+		<%- include("../partials/navigation") %>
+
+		<main class="item-detail-page page-content page-content--narrow" id="main-content">
+			<header class="item-detail-page__header page-header">
+				<p class="page-eyebrow">Instrument details</p>
+				<h1 class="item-detail-page__title page-title"><%= item.name %></h1>
+				<div class="item-detail-page__actions">
+					<a class="item-detail-page__edit-link button button--primary" href="/items/<%= item.id %>/edit">
+						Edit instrument
+					</a>
+					<a class="item-detail-page__delete-link button button--danger" href="/items/<%= item.id %>/delete">
+						Delete instrument
+					</a>
+				</div>
 			</header>
 
 			<dl class="item-details">

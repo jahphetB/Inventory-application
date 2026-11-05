@@ -4,10 +4,16 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
 	</head>
 	<body class="inventory-page">
-		<main class="category-delete-page">
-			<h1 class="category-delete-page__title"><%= title %></h1>
+		<%- include("../partials/navigation") %>
+
+		<main class="category-delete-page page-content page-content--narrow" id="main-content">
+			<header class="page-header">
+				<p class="page-eyebrow">Collections</p>
+				<h1 class="category-delete-page__title page-title"><%= title %></h1>
+			</header>
 
 			<p class="category-delete-page__question">
 				Delete
@@ -15,7 +21,7 @@
 			</p>
 
 			<p class="category-delete-page__count">
-				Product entries: <%= category.item_count %>
+				Instrument entries: <%= category.item_count %>
 			</p>
 
 			<% if (errors.length > 0) { %>
@@ -82,12 +88,14 @@
 					Deleting the category cannot be undone.
 				</p>
 
-				<div class="category-delete-form__actions">
-					<button class="category-delete-form__submit" type="submit">
+				<%- include("../partials/adminPassword") %>
+
+				<div class="category-delete-form__actions form-actions">
+					<button class="category-delete-form__submit button button--danger" type="submit">
 						<%= hasItems ? "Move instruments and delete category" : "Delete category" %>
 					</button>
 					<a
-						class="category-delete-form__cancel"
+						class="category-delete-form__cancel button button--secondary"
 						href="/categories/<%= category.id %>"
 					>Cancel</a>
 				</div>

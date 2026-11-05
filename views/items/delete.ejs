@@ -4,10 +4,16 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
 	</head>
 	<body class="inventory-page">
-		<main class="item-delete-page">
-			<h1 class="item-delete-page__title"><%= title %></h1>
+		<%- include("../partials/navigation") %>
+
+		<main class="item-delete-page page-content page-content--narrow" id="main-content">
+			<header class="page-header">
+				<p class="page-eyebrow">Instrument library</p>
+				<h1 class="item-delete-page__title page-title"><%= title %></h1>
+			</header>
 
 			<p class="item-delete-page__question">
 				Delete <strong class="item-delete-page__item-name"><%= item.name %></strong>
@@ -24,11 +30,13 @@
 				action="/items/<%= item.id %>/delete"
 				method="post"
 			>
-				<div class="item-delete-form__actions">
-					<button class="item-delete-form__submit" type="submit">
+				<%- include("../partials/adminPassword") %>
+
+				<div class="item-delete-form__actions form-actions">
+					<button class="item-delete-form__submit button button--danger" type="submit">
 						Delete instrument
 					</button>
-					<a class="item-delete-form__cancel" href="/items/<%= item.id %>">
+					<a class="item-delete-form__cancel button button--secondary" href="/items/<%= item.id %>">
 						Cancel
 					</a>
 				</div>

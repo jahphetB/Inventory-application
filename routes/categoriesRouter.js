@@ -9,6 +9,7 @@ import {
     postCategoryDelete,
 } from "../controllers/categoriesController.js";
 import { body } from "express-validator";
+import { requireAdminPassword } from "../middleware/requireAdminPassword.js";
 
 const categoriesRouter = Router();
 
@@ -29,13 +30,13 @@ const validateCategory = [
 ];
 
 categoriesRouter.get("/new", getCategoryCreate);
-categoriesRouter.post("/new", validateCategory, postCategoryCreate);
+categoriesRouter.post("/new", requireAdminPassword, validateCategory, postCategoryCreate);
 
 categoriesRouter.get("/:id/edit", getCategoryEdit);
-categoriesRouter.post("/:id/edit", validateCategory, postCategoryEdit);
+categoriesRouter.post("/:id/edit", requireAdminPassword, validateCategory, postCategoryEdit);
 
 categoriesRouter.get("/:id/delete", getCategoryDelete);
-categoriesRouter.post("/:id/delete", postCategoryDelete);
+categoriesRouter.post("/:id/delete", requireAdminPassword, postCategoryDelete);
 
 categoriesRouter.get("/:id", getCategoryDetail);
 

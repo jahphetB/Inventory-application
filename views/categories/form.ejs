@@ -4,10 +4,17 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
 	</head>
 	<body class="inventory-page">
-		<main class="category-form-page">
-			<h1 class="category-form-page__title"><%= title %></h1>
+		<%- include("../partials/navigation") %>
+
+		<main class="category-form-page page-content page-content--narrow" id="main-content">
+			<header class="page-header">
+				<p class="page-eyebrow">Collections</p>
+				<h1 class="category-form-page__title page-title"><%= title %></h1>
+				<p class="page-description">Give your instruments a collection of their own.</p>
+			</header>
 
 			<% if (errors.length > 0) { %>
 				<div class="form-errors" role="alert">
@@ -20,7 +27,7 @@
 				</div>
 			<% } %>
 
-			<form class="category-form" action="<%= action %>" method="post">
+			<form class="category-form form-panel" action="<%= action %>" method="post">
 				<div class="form-field category-form__name-field">
 					<label class="form-field__label" for="category-name">
 						Name (required)
@@ -46,11 +53,13 @@
 					><%= category.description %></textarea>
 				</div>
 
-				<div class="category-form__actions">
-					<button class="category-form__submit" type="submit">
+				<%- include("../partials/adminPassword") %>
+
+				<div class="category-form__actions form-actions">
+					<button class="category-form__submit button button--primary" type="submit">
 						<%= submitLabel %>
 					</button>
-					<a class="category-form__cancel" href="<%= cancelUrl %>">Cancel</a>
+					<a class="category-form__cancel button button--secondary" href="<%= cancelUrl %>">Cancel</a>
 				</div>
 			</form>
 		</main>

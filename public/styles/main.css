@@ -47,6 +47,12 @@
 	outline-offset: 0.3rem;
 }
 
+.form-field__input:focus-visible,
+.item-details a:focus-visible {
+	outline: 0.15rem solid var(--color-accent);
+	outline-offset: 0.25rem;
+}
+
 .skip-link {
 	position: absolute;
 	top: 0.5rem;
@@ -382,6 +388,216 @@
 	text-align: center;
 }
 
+.page-content--narrow {
+	max-width: 56rem;
+}
+
+.page-header {
+	margin-bottom: 2rem;
+}
+
+.form-panel,
+.category-delete-form,
+.item-delete-form,
+.item-details {
+	padding: clamp(1.25rem, 4vw, 2rem);
+	border: 0.0625rem solid var(--color-border);
+	border-radius: var(--radius);
+	background: var(--color-surface);
+}
+
+.form-panel {
+	display: grid;
+	gap: 1.5rem;
+}
+
+.item-form {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.item-form__description-field,
+.item-form__category-field,
+.item-form__actions {
+	grid-column: 1 / -1;
+}
+
+.form-field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	min-width: 0;
+}
+
+.form-field__label {
+	font-size: 0.9rem;
+	font-weight: 600;
+}
+
+.admin-password-field {
+	grid-column: 1 / -1;
+}
+
+.form-field__help {
+	margin: 0;
+	color: var(--color-muted);
+	font-size: 0.85rem;
+}
+
+.category-delete-form .admin-password-field,
+.item-delete-form .admin-password-field {
+	margin-bottom: 1.5rem;
+}
+
+.form-field__input {
+	width: 100%;
+	min-width: 0;
+	min-height: 3rem;
+	padding: 0.75rem;
+	border: 0.0625rem solid var(--color-border);
+	border-radius: 0.6rem;
+	background: #111115;
+	color: #f0eef6;
+	font: inherit;
+	line-height: 1.5;
+}
+
+.form-field__input:hover {
+	border-color: #75618f;
+}
+
+.form-field__input:focus-visible {
+	border-color: var(--color-accent);
+}
+
+.form-field__input:user-invalid {
+	border-color: var(--color-danger);
+}
+
+textarea.form-field__input {
+	min-height: 8rem;
+	resize: vertical;
+}
+
+.form-actions,
+.item-detail-page__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+}
+
+.form-actions {
+	margin-top: 0.5rem;
+	padding-top: 1.5rem;
+	border-top: 0.0625rem solid var(--color-border);
+}
+
+.form-actions .button {
+	max-width: 100%;
+	min-height: 2.75rem;
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+.form-errors {
+	margin-bottom: 1.5rem;
+	padding: 1rem 1.25rem;
+	border: 0.0625rem solid #66404c;
+	border-radius: 0.75rem;
+	background: #36212a;
+	color: var(--color-danger);
+	overflow-wrap: anywhere;
+}
+
+.form-errors__heading {
+	margin: 0;
+	font-weight: 650;
+}
+
+.form-errors__list {
+	margin: 0.5rem 0 0;
+	padding-left: 1.25rem;
+}
+
+.item-detail-page__actions {
+	margin-top: 1.5rem;
+}
+
+.item-details {
+	display: grid;
+	grid-template-columns: minmax(7rem, 1fr) minmax(0, 3fr);
+	gap: 1.25rem 2rem;
+	margin: 0;
+}
+
+.item-details__label {
+	color: var(--color-muted);
+	font-size: 0.9rem;
+}
+
+.item-details dd {
+	min-width: 0;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+.item-details__description {
+	white-space: pre-wrap;
+}
+
+.item-details__price {
+	color: var(--color-accent);
+	font-size: 1.35rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+.item-details__category-link {
+	color: var(--color-accent);
+	text-underline-offset: 0.2em;
+}
+
+.item-details__category-link:hover {
+	color: #ffffff;
+}
+
+.item-delete-page__question,
+.category-delete-page__question {
+	margin: 0 0 0.75rem;
+	font-size: 1.15rem;
+	overflow-wrap: anywhere;
+}
+
+.category-delete-page__count {
+	margin: 0 0 1.5rem;
+	color: var(--color-muted);
+}
+
+.item-delete-page__warning,
+.category-delete-form__warning {
+	margin: 0 0 1.5rem;
+	padding: 1rem 1.25rem;
+	border-left: 0.2rem solid var(--color-danger);
+	border-radius: 0 0.5rem 0.5rem 0;
+	background: #36212a;
+	color: var(--color-danger);
+}
+
+.category-delete-form__transfer-notice,
+.category-delete-form__empty-notice {
+	margin: 0 0 1.5rem;
+	color: var(--color-muted);
+}
+
+.category-delete-form__destination-field {
+	margin-bottom: 1.5rem;
+}
+
+.item-delete-form .form-actions {
+	margin-top: 0;
+	padding-top: 0;
+	border-top: 0;
+}
+
 @media (max-width: 45rem) {
 	.site-navigation {
 		gap: 1rem;
@@ -403,6 +619,23 @@
 }
 
 @media (max-width: 30rem) {
+	.item-form,
+	.item-details {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.item-details {
+		gap: 0.35rem;
+	}
+
+	.item-details dd:not(:last-child) {
+		margin-bottom: 1rem;
+	}
+
+	.form-actions .button {
+		flex: 1 1 100%;
+	}
+
 	.site-navigation__actions {
 		width: 100%;
 		margin-left: 0;

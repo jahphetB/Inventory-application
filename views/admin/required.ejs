@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
+	</head>
+	<body class="inventory-page">
+		<%- include("../partials/navigation") %>
+		<main class="page-content page-content--narrow" id="main-content">
+			<header class="page-header">
+				<p class="page-eyebrow">Inventory administration</p>
+				<h1 class="page-title"><%= title %></h1>
+			</header>
+			<div class="form-errors" role="alert"><p><%= message %></p></div>
+			<a class="button button--secondary" href="<%= cancelUrl %>">Back to form</a>
+		</main>
+	</body>
+</html>
