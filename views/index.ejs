@@ -19,65 +19,24 @@
 				</p>
 			</header>
 
-			<section class="category-section" aria-labelledby="category-heading">
-				<div class="category-section__header">
-					<h2 class="category-section__heading section-heading" id="category-heading">
-						Browse categories
-					</h2>
-					<p class="category-section__meta section-meta">
-						<%= categories.length %>
-						<%= categories.length === 1 ? "category" : "categories" %>
-					</p>
+			<section class="family-section" aria-labelledby="family-heading">
+				<div class="family-section__header category-section__header">
+					<h2 class="family-section__heading section-heading" id="family-heading">Instrument families</h2>
+					<p class="family-section__meta section-meta"><%= families.length %> families</p>
 				</div>
-
-				<% if (categories.length === 0) { %>
-					<p class="category-section__empty empty-state">
-						No categories yet. Add a category to organize your instruments.
-					</p>
-				<% } %>
-
-				<ul class="category-list">
-					<% categories.forEach((category) => { %>
-						<li class="category-card">
-							<p class="category-card__type">Collection</p>
-
-							<h3 class="category-card__heading">
-								<a class="category-card__link" href="/categories/<%= category.id %>">
-									<%= category.name %>
-								</a>
-							</h3>
-
-							<p class="category-card__description">
-								<%= category.description || "Explore the instruments in this collection." %>
-							</p>
-
-							<p class="category-card__count">
-								<%= category.item_count %>
-								<%= Number(category.item_count) === 1 ? "instrument" : "instruments" %>
-							</p>
+				<ul class="family-list category-list">
+					<% families.forEach((family) => { %>
+						<li class="family-card category-card">
+							<h3 class="family-card__heading category-card__heading"><a class="family-card__link category-card__link" href="/families/<%= family.slug %>"><%= family.name %></a></h3>
+							<p class="family-card__count category-card__count"><%= family.category_count %> <%= family.category_count === 1 ? "category" : "categories" %> &middot; <%= family.item_count %> <%= family.item_count === 1 ? "instrument" : "instruments" %></p>
 						</li>
 					<% }); %>
-
-					<li class="category-card category-card--uncategorized">
-						<p class="category-card__type">Unassigned</p>
-
-						<h3 class="category-card__heading">
-							<a class="category-card__link" href="/items/uncategorized">
-								Uncategorized
-							</a>
-						</h3>
-
-						<p class="category-card__description">
-							Instruments waiting for a collection of their own.
-						</p>
-
-						<p class="category-card__count">
-							<%= uncategorizedCount %>
-							<%= Number(uncategorizedCount) === 1 ? "instrument" : "instruments" %>
-						</p>
-					</li>
 				</ul>
 			</section>
+			<nav class="inventory-shortcuts" aria-label="Other inventory views">
+				<a class="inventory-shortcuts__link" href="/items">All items</a>
+				<a class="inventory-shortcuts__link" href="/items/uncategorized">Uncategorized (<%= uncategorizedCount %>)</a>
+			</nav>
 		</main>
 	</body>
 </html>

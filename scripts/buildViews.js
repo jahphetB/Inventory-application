@@ -23,6 +23,9 @@ const templateLocals = [
 	"hasItems",
 	"selectedDestination",
 	"message",
+	"families",
+	"family",
+	"breadcrumbs",
 ];
 
 function escapeHTML(value) {

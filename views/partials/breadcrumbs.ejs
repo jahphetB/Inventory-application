@@ -1,0 +1,13 @@
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+	<ol class="breadcrumbs__list">
+		<% breadcrumbs.forEach((crumb) => { %>
+			<li class="breadcrumbs__item">
+				<% if (crumb.href) { %>
+					<a class="breadcrumbs__link" href="<%= crumb.href %>"><%= crumb.label %></a>
+				<% } else { %>
+					<span class="breadcrumbs__current" aria-current="page"><%= crumb.label %></span>
+				<% } %>
+			</li>
+		<% }); %>
+	</ol>
+</nav>

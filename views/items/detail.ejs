@@ -10,6 +10,7 @@
 		<%- include("../partials/navigation") %>
 
 		<main class="item-detail-page page-content page-content--narrow" id="main-content">
+			<%- include("../partials/breadcrumbs", { breadcrumbs: [{ label: "Home", href: "/" }, ...(item.family_slug ? [{ label: item.family_name, href: "/families/" + item.family_slug }] : []), { label: item.category_name || "Uncategorized", href: item.category_id === null ? "/items/uncategorized" : "/categories/" + item.category_id }, { label: item.name }] }) %>
 			<header class="item-detail-page__header page-header">
 				<p class="page-eyebrow">Instrument details</p>
 				<h1 class="item-detail-page__title page-title"><%= item.name %></h1>

@@ -43,11 +43,15 @@ export async function getCategoriesWithCounts() {
 			categories.id,
 			categories.name,
 			categories.description,
+			categories.family_id,
+			families.name AS family_name,
+			families.slug AS family_slug,
 			COUNT(items.id) AS item_count
 		FROM categories
+		LEFT JOIN families ON families.id = categories.family_id
 		LEFT JOIN items ON items.category_id = categories.id
-		GROUP BY categories.id
-		ORDER BY LOWER(categories.name), categories.id;
+		GROUP BY categories.id, families.id
+		ORDER BY LOWER(families.name), LOWER(categories.name), categories.id;
 	`);
 
 	return rows;
@@ -94,9 +98,12 @@ export async function getItemById(id) {
 			items.price,
 			items.stock_quantity,
 			items.category_id,
-			categories.name AS category_name
+			categories.name AS category_name,
+			families.name AS family_name,
+			families.slug AS family_slug
 		FROM items
 		LEFT JOIN categories ON categories.id = items.category_id
+		LEFT JOIN families ON families.id = categories.family_id
 		WHERE items.id = $1;
 	`, [id]);
 
@@ -105,9 +112,11 @@ export async function getItemById(id) {
 
 export async function getCategoryById(id) {
 	const { rows } = await pool.query(`
-		SELECT id, name, description, family_id
+		SELECT categories.id, categories.name, categories.description, categories.family_id,
+			families.name AS family_name, families.slug AS family_slug
 		FROM categories
-		WHERE id = $1;
+		LEFT JOIN families ON families.id = categories.family_id
+		WHERE categories.id = $1;
 	`, [id]);
 
 	return rows[0];

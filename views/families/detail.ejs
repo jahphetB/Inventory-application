@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= title %></title>
+		<link rel="stylesheet" href="/styles/main.css">
+	</head>
+	<body class="inventory-page">
+		<%- include("../partials/navigation") %>
+		<main class="family-page page-content" id="main-content">
+			<%- include("../partials/breadcrumbs", { breadcrumbs: [{ label: "Home", href: "/" }, { label: family.name }] }) %>
+			<header class="family-page__header page-header">
+				<p class="family-page__eyebrow page-eyebrow">Instrument family</p>
+				<h1 class="family-page__title page-title"><%= family.name %></h1>
+			</header>
+			<div class="family-page__section-header category-section__header">
+				<h2 class="family-page__section-title section-heading">Categories</h2>
+				<a class="family-page__add-category button button--secondary" href="/categories/new?family=<%= family.slug %>">Add category</a>
+			</div>
+			<% if (categories.length === 0) { %>
+				<p class="family-page__empty empty-state">No categories in this family yet.</p>
+			<% } else { %>
+				<ul class="family-page__categories category-list">
+					<% categories.forEach((category) => { %>
+						<li class="family-page__category category-card">
+							<h3 class="category-card__heading"><a class="category-card__link" href="/categories/<%= category.id %>"><%= category.name %></a></h3>
+							<% if (category.description) { %>
+								<p class="category-card__description"><%= category.description %></p>
+							<% } %>
+							<p class="category-card__count"><%= category.item_count %> <%= category.item_count === 1 ? "instrument" : "instruments" %></p>
+						</li>
+					<% }); %>
+				</ul>
+			<% } %>
+		</main>
+	</body>
+</html>

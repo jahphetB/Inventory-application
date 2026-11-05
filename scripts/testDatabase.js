@@ -4,7 +4,10 @@ if (!["localhost", "127.0.0.1", "::1"].includes(process.env.PGHOST)) {
 	throw new Error("Database integration tests require an explicit local PGHOST.");
 }
 
-const child = spawn(process.execPath, ["--test", "tests/migrations.integration.test.js"], {
+await import("./buildViews.js");
+if (process.exitCode) process.exit(process.exitCode);
+
+const child = spawn(process.execPath, ["--test", "tests/migrations.integration.test.js", "tests/hierarchy.integration.test.js"], {
 	stdio: "inherit",
 	env: { ...process.env, INVENTORY_DATABASE_TESTS: "true" },
 });

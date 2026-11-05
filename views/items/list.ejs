@@ -10,6 +10,7 @@
 		<%- include("../partials/navigation") %>
 
 		<main class="item-list-page page-content" id="main-content">
+			<%- include("../partials/breadcrumbs", { breadcrumbs: [{ label: "Home", href: "/" }, ...(locals.category && category.family_slug ? [{ label: category.family_name, href: "/families/" + category.family_slug }] : []), { label: title }] }) %>
 			<header class="item-list-page__header">
 				<p class="item-list-page__eyebrow page-eyebrow">
 					<%= locals.category ? "Collection" : "Instrument library" %>
