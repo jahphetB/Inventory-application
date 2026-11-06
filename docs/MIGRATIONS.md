@@ -1,5 +1,7 @@
 # Instrument-family migrations
 
+Release update: migrations 001–004 were applied to production during the [approved November 5 release](PRODUCTION_RELEASE.md). The local-step production boundary below records the original checkpoint; future production migrations still require authorization.
+
 `db/schema.sql` creates the original category/item tables for a new database. Versioned SQL files in `db/migrations/` extend that schema without recreating its populated tables. Never rerun `db/schema.sql` against existing tables.
 
 ## Running locally

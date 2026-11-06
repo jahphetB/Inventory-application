@@ -1,5 +1,7 @@
 # Approved hierarchy work
 
+Release update: the approved production rollout is complete. See the [November 5 release record](PRODUCTION_RELEASE.md). Statements below about production being unchanged describe the earlier local checkpoints.
+
 Work proceeds one meaningful step at a time. After a step is verified, make at least two coherent implementation commits, push the approved feature branch, and wait for the user's `done`, `works`, or `next` before the following step. The separate baseline commit preserves the previous deployed application and does not count toward those implementation commits.
 
 ## Step 1: family model and local migration

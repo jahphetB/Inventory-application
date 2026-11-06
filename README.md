@@ -161,7 +161,9 @@ The automated tests use Node's built-in test runner. `npm test` checks authoriza
 
 ## Production deployment
 
-The hierarchy feature branch requires an approved production database migration before deploying code that reads the new schema. The local migration does not update production. Obtain separate approval for the production backup, mapping review, migration, and deployment; follow the standard commands below only as part of that approved release. See [the production boundary](docs/MIGRATIONS.md#production-boundary).
+The hierarchy and catalog were released to production with approval on November 5, 2026. See the [release record](docs/PRODUCTION_RELEASE.md) for the backup, rehearsal, migration, deployment, and live verification details.
+
+Local migrations do not update production. Future schema changes require an approved production backup, mapping review, migration, and coordinated deployment before deploying code that reads the changed schema. Follow the standard commands below only as part of an approved release. See [the production boundary](docs/MIGRATIONS.md#production-boundary).
 
 The existing production Worker uses the `production` environment in `wrangler.jsonc`, including its Hyperdrive binding and static assets. Local PostgreSQL settings are not production configuration.
 

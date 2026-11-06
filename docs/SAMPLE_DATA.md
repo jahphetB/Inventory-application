@@ -1,5 +1,7 @@
 # Sample catalog import
 
+Release update: the 350 samples were also imported into production during the [approved November 5 release](PRODUCTION_RELEASE.md), preserving all five existing instruments. The local-step boundary below describes the earlier checkpoint.
+
 The approved catalog has 70 categories and 350 new instruments: five per category. There are 21 primary-source-verified real identities and 329 explicitly fictional identities using the brand **Fictional Demo**. See [the dataset](../data/sampleCatalog/README.md), [the source registry](../data/sampleCatalog/sources.js), and [the approved taxonomy](TAXONOMY_PROPOSAL.md).
 
 **All new prices and stock quantities are fictional demonstration data.** Product sources verify identities only, not seeded prices, stock, availability, or current retail listings. This notice belongs here rather than being repeated throughout the interface.
