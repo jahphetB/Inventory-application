@@ -579,7 +579,7 @@ textarea.form-field__input {
 }
 
 .item-details__description {
-	white-space: pre-wrap;
+	white-space: pre-line;
 }
 
 .item-details__price {
