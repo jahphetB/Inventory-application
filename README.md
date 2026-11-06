@@ -1,6 +1,6 @@
 # Studio Inventory
 
-A musical instrument inventory application built for The Odin Project. Browse collections, inspect instrument details, and manage prices and stock in a dark studio interface.
+A musical instrument inventory application. Browse collections, inspect instrument details, and manage prices and stock in a dark studio interface.
 
 [Live application](https://inventory-application.jahphet.workers.dev/)
 
