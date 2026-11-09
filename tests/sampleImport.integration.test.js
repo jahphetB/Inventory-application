@@ -140,13 +140,13 @@ test("a later additive revision creates only its new keys and preserves original
 		await setup(client); await importSampleCatalog(client, catalog, cleanup);
 		const before = await snapshot(client);
 		const extended = structuredClone(catalog);
-		extended.revision = 2; extended.expected_categories += 1; extended.family_counts[1] += 1;
+		extended.revision = catalog.revision + 1; extended.expected_categories += 1; extended.family_counts[1] += 1;
 		extended.categories.push(category(1, "Singing bowls", "Resonating bowls played by rubbing or striking.", 5000, ["Small bronze singing bowl", "Large meditation bowl", "Hand-hammered singing bowl", "Crystal singing bowl", "Compact travel singing bowl"]));
 		const result = await importSampleCatalog(client, extended, cleanup);
 		assert.equal(result.categories_created, 1); assert.equal(result.items_created, 5); assert.equal(result.items_skipped, 350);
 		const after = await snapshot(client);
 		assert.deepEqual(after.items.slice(0, before.items.length), before.items);
-		assert.deepEqual(after.sample_catalog_items.filter((row) => row.imported_revision === 1), before.sample_catalog_items);
+		assert.deepEqual(after.sample_catalog_items.filter((row) => row.imported_revision === catalog.revision), before.sample_catalog_items);
 		assert.equal((await inspectSampleCatalog(client, extended)).healthy, true);
 	});
 });

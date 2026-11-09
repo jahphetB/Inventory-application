@@ -2,7 +2,15 @@
 
 Release update: the 350 samples were also imported into production during the [approved November 5 release](PRODUCTION_RELEASE.md), preserving all five existing instruments. The local-step boundary below describes the earlier checkpoint.
 
-The approved catalog has 70 categories and 350 new instruments: five per category. There are 21 primary-source-verified real identities and 329 explicitly fictional identities using the brand **Fictional Demo**. See [the dataset](../data/sampleCatalog/README.md), [the source registry](../data/sampleCatalog/sources.js), and [the approved taxonomy](TAXONOMY_PROPOSAL.md).
+The approved catalog has 70 categories and 350 new instruments: five per category. There are 21 primary-source-verified real identities and 329 invented identities using 24 varied catalog brand names. Revision 2 replaces the former shared placeholder brand in the interface; internal identity metadata still records invented products accurately. See [the dataset](../data/sampleCatalog/README.md), [the source registry](../data/sampleCatalog/sources.js), and [the approved taxonomy](TAXONOMY_PROPOSAL.md).
+
+## Upgrading existing brand values
+
+Run `npm run db:brands:update` locally before rerunning the revision-2 importer against a revision-1 database. The explicit upgrade archives existing rows in ignored `generated/brand-updates/`, updates only importer-owned placeholder brands and their catalog definitions, preserves stable keys and user edits/deletions, and verifies rerun compatibility. Verified brands and all other inventory fields remain unchanged. Ordinary imports continue to reject unreviewed definition changes.
+
+For an approved production update, run `node --env-file=.env.production scripts/updateCatalogBrands.js --allow-remote` with an ignored `DATABASE_URL` configuration file. This takes and verifies a PostgreSQL backup first. Never put credentials in tracked files or shell arguments. The supplied backup executable paths assume this Windows PostgreSQL 18 installation.
+
+The approved November 8, 2026 update replaced all 329 placeholder brands locally and in production. Counts stayed at 354 local instruments and 355 production instruments; all other item fields were verified unchanged. Production Worker version `50fa068d-e893-4e32-a05d-68bdb9d8c861` was deployed, and the live list/detail pages were checked for the replacement brands. Backup and verification evidence is retained in ignored `generated/brand-updates/`.
 
 **All new prices and stock quantities are fictional demonstration data.** Product sources verify identities only, not seeded prices, stock, availability, or current retail listings. This notice belongs here rather than being repeated throughout the interface.
 

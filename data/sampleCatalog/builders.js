@@ -1,4 +1,7 @@
-export const fictionalBrand = "Fictional Demo";
+import { catalogBrand } from "./brands.js";
+
+// Persisted revision-one keys must survive display-brand changes.
+const legacyKeyBrand = "Fictional Demo";
 
 export function slug(value) {
 	return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -14,11 +17,11 @@ export function category(family_id, name, description, baseCents, variants) {
 		key, family_id, name, description,
 		items: variants.map((variant, index) => {
 			const identity = typeof variant === "string"
-				? { name: variant, brand: fictionalBrand, identity_kind: "fictional", source: null, description: `${variant}. ${description}` }
+				? { name: variant, brand: catalogBrand(key, index), identity_kind: "fictional", source: null, description: `${variant}. ${description}` }
 				: variant;
 			return {
 				...identity,
-				key: `${key}/${slug(identity.brand + " " + identity.name)}`,
+				key: `${key}/${slug((typeof variant === "string" ? legacyKeyBrand : identity.brand) + " " + identity.name)}`,
 				price: ((baseCents + index * 1375) / 100).toFixed(2),
 				stock_quantity: [3, 0, 5, 2, 1][index],
 			};

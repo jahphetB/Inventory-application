@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { fictionalBrand } from "../data/sampleCatalog/builders.js";
+import { catalogBrands } from "../data/sampleCatalog/brands.js";
 
 export const normalizeIdentity = (value) => value.trim().toLowerCase();
 
@@ -40,8 +40,8 @@ export function validateCatalog(catalog) {
 				const source = catalog.sources[item.source];
 				if (!source?.url?.startsWith("https://") || !source.identities.some((entry) => entry.brand === item.brand && entry.name === item.name)) fail("real identity lacks a matching primary source");
 				real += 1;
-			} else if (item.identity_kind !== "fictional" || item.brand !== fictionalBrand || item.source !== null) {
-				fail("fictional identity must use the explicit fictional brand");
+			} else if (item.identity_kind !== "fictional" || !catalogBrands.includes(item.brand) || item.source !== null) {
+				fail("invented identity must use an approved catalog brand without a source");
 			}
 			itemKeys.add(item.key); identities.add(identity);
 		}

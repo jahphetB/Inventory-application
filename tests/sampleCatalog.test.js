@@ -7,6 +7,9 @@ test("approved catalog has 70 categories, five distinct items each, and verified
 	assert.deepEqual(validateCatalog(catalog), { categories: 70, items: 350, real: 21, fictional: 329 });
 	assert.deepEqual(catalog.family_counts, { 1: 16, 2: 12, 3: 17, 4: 17, 5: 8 });
 	assert.ok(!catalog.categories.some((category) => category.name === "Drums"));
+	const generated = catalog.categories.flatMap((category) => category.items).filter((item) => item.identity_kind === "fictional");
+	assert.ok(generated.every((item) => !/fictional|demo|random/i.test(item.brand)));
+	assert.equal(new Set(generated.map((item) => item.brand)).size, 24);
 });
 
 test("catalog rejects invalid counts, families, duplicate keys/names/identities, prices, and stock", () => {
@@ -17,7 +20,7 @@ test("catalog rejects invalid counts, families, duplicate keys/names/identities,
 		(copy) => { copy.categories[1].name = copy.categories[0].name.toUpperCase(); },
 		(copy) => { copy.categories[0].items.pop(); },
 		(copy) => { copy.categories[0].items[1].key = copy.categories[0].items[0].key; },
-		(copy) => { copy.categories[0].items[1].name = copy.categories[0].items[0].name; },
+		(copy) => { copy.categories[0].items[1].name = copy.categories[0].items[0].name; copy.categories[0].items[1].brand = copy.categories[0].items[0].brand; },
 		(copy) => { copy.categories[0].items[0].price = "-1.00"; },
 		(copy) => { copy.categories[0].items[0].price = "1.001"; },
 		(copy) => { copy.categories[0].items[0].stock_quantity = 1.5; },
@@ -33,7 +36,7 @@ test("invented models cannot use real brands or unrelated source references", ()
 	Object.assign(copy.categories[0].items[0], { brand: "Fender", name: "Invented Real Model", identity_kind: "real", source: "fender-player-ii" });
 	assert.throws(() => validateCatalog(copy), /matching primary source/);
 	copy.categories[0].items[0].identity_kind = "fictional";
-	assert.throws(() => validateCatalog(copy), /explicit fictional brand/);
+	assert.throws(() => validateCatalog(copy), /approved catalog brand/);
 });
 
 test("definition hashes ignore object key order and detect meaningful dataset edits", () => {

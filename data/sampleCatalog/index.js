@@ -7,7 +7,7 @@ import sources from "./sources.js";
 
 export default {
 	id: "studio-catalog",
-	revision: 1,
+	revision: 2,
 	expected_categories: 70,
 	items_per_category: 5,
 	family_counts: { 1: 16, 2: 12, 3: 17, 4: 17, 5: 8 },
